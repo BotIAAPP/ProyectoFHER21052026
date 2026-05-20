@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAP SD — Manual de Operación · Gilm</title>
+<meta name="description" content="Capacitación interactiva del módulo SAP SD (Sales & Distribution). Manual de operación para usuarios de Gilm.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:    { DEFAULT:'#0E0E10', 80:'#1F2024', 60:'#3A3C44', 40:'#6B6E78' },
+        cream:  { 50:'#FFFCF7', 100:'#FAF4EC', 200:'#F2E8D8', 300:'#E5D6BF' },
+        burnt:  { 400:'#E07739', 500:'#D85F1B', 600:'#B8430E', 700:'#8F3007' },
+        rust:   '#7A2E0E'
+      },
+      fontFamily: {
+        serif:   ['Fraunces','Georgia','serif'],
+        sans:    ['"Plus Jakarta Sans"','system-ui','sans-serif'],
+        mono:    ['"JetBrains Mono"','ui-monospace','monospace'],
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #FAF4EC;
+    background-image:
+      radial-gradient(ellipse at 8% 0%, rgba(216,95,27,0.06) 0%, transparent 45%),
+      radial-gradient(ellipse at 100% 100%, rgba(14,14,16,0.06) 0%, transparent 50%);
+    color: #0E0E10;
+    min-height: 100vh;
+  }
+
+  /* Grain overlay — gives a paper/manual feel */
+  body::before {
+    content:'';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/></svg>");
+    mix-blend-mode: multiply;
+    opacity: 0.10;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Hairline grid in background */
+  body::after {
+    content:'';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(14,14,16,0.035) 1px, transparent 1px);
+    background-size: calc(100% / 12) 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  main, header, footer { position: relative; z-index: 2; }
+
+  /* Typography utilities */
+  .font-display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'opsz' 144, 'SOFT' 50, 'wght' 600;
+    letter-spacing: -0.025em;
+  }
+  .font-display-light {
+    font-family: 'Fraunces', Georgia, serif;
+    font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 300;
+    letter-spacing: -0.02em;
+  }
+  .italic-display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-style: italic;
+    font-variation-settings: 'opsz' 144, 'SOFT' 100, 'wght' 500;
+  }
+
+  .label {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* Marker line for tech labels */
+  .marker {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .marker::before {
+    content:'';
+    width: 28px; height: 1px;
+    background-color: currentColor;
+    flex-shrink: 0;
+  }
+
+  /* The giant chapter number (decorative) */
+  .chapter-num {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 144, 'wght' 200, 'SOFT' 100;
+    font-feature-settings: 'lnum';
+    font-size: clamp(180px, 24vw, 320px);
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgba(14,14,16,0.16);
+    user-select: none;
+    pointer-events: none;
+    letter-spacing: -0.06em;
+  }
+
+  /* Slide reveal */
+  .slide { display: none; }
+  .slide.active { display: block; }
+  .slide.active .reveal {
+    animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .slide.active .reveal-1 { animation-delay: 0.05s; }
+  .slide.active .reveal-2 { animation-delay: 0.12s; }
+  .slide.active .reveal-3 { animation-delay: 0.20s; }
+  .slide.active .reveal-4 { animation-delay: 0.28s; }
+  .slide.active .reveal-5 { animation-delay: 0.36s; }
+  .slide.active .reveal-6 { animation-delay: 0.44s; }
+  .slide.active .reveal-7 { animation-delay: 0.52s; }
+
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(20px); filter: blur(2px); }
+    to   { opacity: 1; transform: translateY(0);    filter: blur(0); }
+  }
+
+  /* Stepper */
+  .step-dot {
+    width: 12px; height: 12px;
+    border-radius: 999px;
+    border: 1px solid rgba(14,14,16,0.3);
+    background: transparent;
+    transition: all .35s ease;
+    position: relative;
+  }
+  .step-dot.completed {
+    background: #0E0E10;
+    border-color: #0E0E10;
+  }
+  .step-dot.active {
+    background: #D85F1B;
+    border-color: #D85F1B;
+    transform: scale(1.4);
+    box-shadow: 0 0 0 4px rgba(216,95,27,0.18);
+  }
+
+  /* Buttons */
+  .btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    font-weight: 500;
+    transition: all .25s ease;
+    border: 1px solid #0E0E10;
+  }
+  .btn-dark {
+    background: #0E0E10;
+    color: #FAF4EC;
+  }
+  .btn-dark:hover:not(:disabled) {
+    background: #D85F1B;
+    border-color: #D85F1B;
+  }
+  .btn-ghost {
+    background: transparent;
+    color: #0E0E10;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background: #0E0E10;
+    color: #FAF4EC;
+  }
+  .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* Tabular numbers */
+  .tnum { font-feature-settings: 'tnum' on, 'lnum' on; }
+
+  /* Marquee */
+  .marquee {
+    overflow: hidden; mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  }
+  .marquee-track {
+    display: inline-flex; gap: 48px;
+    animation: marquee 50s linear infinite;
+    white-space: nowrap;
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* Drop cap */
+  .dropcap::first-letter {
+    font-family: 'Fraunces', serif;
+    font-variation-settings: 'opsz' 144, 'wght' 800, 'SOFT' 0;
+    float: left;
+    font-size: 4.5rem;
+    line-height: 0.85;
+    padding: 4px 12px 0 0;
+    color: #D85F1B;
+  }
+
+  /* Decorative horizontal rule */
+  .rule-tech {
+    display: flex; align-items: center; gap: 12px;
+    color: rgba(14,14,16,0.4);
+  }
+  .rule-tech::before, .rule-tech::after {
+    content: ''; flex: 1; height: 1px; background: currentColor;
+  }
+
+  ::selection { background-color: #0E0E10; color: #FAF4EC; }
+  kbd {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 6px;
+    border: 1px solid rgba(14,14,16,0.3);
+    border-radius: 3px;
+    background: rgba(14,14,16,0.04);
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="border-b border-ink/15 bg-cream-100/80 backdrop-blur sticky top-0 z-20">
+  <!-- Top marquee strip -->
+  <div class="bg-ink text-cream-100 marquee py-1.5">
+    <div class="marquee-track label">
+      <span>SAP SD · Sales & Distribution</span>
+      <span class="text-burnt-400">●</span>
+      <span>Manual de operación v.1</span>
+      <span class="text-burnt-400">●</span>
+      <span>Gilm — Capacitación interna</span>
+      <span class="text-burnt-400">●</span>
+      <span>2026 — Edición revisada</span>
+      <span class="text-burnt-400">●</span>
+      <span>SAP SD · Sales & Distribution</span>
+      <span class="text-burnt-400">●</span>
+      <span>Manual de operación v.1</span>
+      <span class="text-burnt-400">●</span>
+      <span>Gilm — Capacitación interna</span>
+      <span class="text-burnt-400">●</span>
+      <span>2026 — Edición revisada</span>
+      <span class="text-burnt-400">●</span>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-8 py-5">
+    <div class="flex items-center justify-between gap-6">
+      <div class="flex items-center gap-4">
+        <!-- Geometric logo -->
+        <svg width="38" height="38" viewBox="0 0 40 40" class="flex-shrink-0">
+          <rect x="1" y="1" width="38" height="38" fill="#0E0E10"/>
+          <path d="M8 14 L20 8 L32 14 L32 26 L20 32 L8 26 Z" fill="none" stroke="#D85F1B" stroke-width="1.5"/>
+          <circle cx="20" cy="20" r="3" fill="#D85F1B"/>
+        </svg>
+        <div>
+          <div class="label text-ink-60">Capítulo</div>
+          <div class="font-display text-lg leading-tight">Sales &amp; Distribution</div>
+        </div>
+      </div>
+      <div class="text-right">
+        <div class="label text-ink-60 mb-1">Progreso</div>
+        <div class="font-mono text-sm tnum">
+          <span id="current-step" class="font-bold text-burnt-500">01</span>
+          <span class="text-ink-40 mx-1">/</span>
+          <span id="total-steps" class="text-ink-60">07</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="mt-5 flex items-center gap-3" id="stepper"></div>
+  </div>
+</header>
+
+<!-- ============================ MAIN ============================ -->
+<main class="max-w-7xl mx-auto px-8 py-16 lg:py-24">
+
+<!-- ============================ SLIDE 01 ============================ -->
+<section class="slide active" data-step="1">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">01</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Introducción — Capítulo uno</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          El módulo<br>
+          que <span class="italic-display text-burnt-600">mueve</span><br>
+          tu negocio.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4">
+          <span class="text-ink-60">§</span>
+        </div>
+
+        <p class="dropcap text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          SAP <strong class="font-semibold">SD</strong> —Sales &amp; Distribution— es el módulo que gestiona el proceso de ventas de extremo a extremo: desde el momento en que un cliente solicita un material hasta que recibe su factura debidamente timbrada por el SAT.
+        </p>
+
+        <div class="mt-10 grid sm:grid-cols-3 gap-6 reveal reveal-6">
+          <div>
+            <div class="label text-burnt-600 mb-2">i.</div>
+            <p class="text-sm leading-relaxed text-ink-80"><strong class="font-semibold">Estandariza</strong> la forma en que se vende en toda la empresa.</p>
+          </div>
+          <div>
+            <div class="label text-burnt-600 mb-2">ii.</div>
+            <p class="text-sm leading-relaxed text-ink-80"><strong class="font-semibold">Conecta</strong> ventas con inventario, logística y finanzas en tiempo real.</p>
+          </div>
+          <div>
+            <div class="label text-burnt-600 mb-2">iii.</div>
+            <p class="text-sm leading-relaxed text-ink-80"><strong class="font-semibold">Trazabilidad</strong> total: cada pedido, entrega y factura quedan registrados.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right column: technical illustration -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 01 · Vista panorámica</div>
+      <svg viewBox="0 0 320 360" class="w-full h-auto">
+        <!-- Background hatch -->
+        <defs>
+          <pattern id="hatch1" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="6" stroke="#0E0E10" stroke-width="0.4" opacity="0.18"/>
+          </pattern>
+        </defs>
+
+        <!-- Frame -->
+        <rect x="10" y="10" width="300" height="340" fill="none" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="14" y="14" width="292" height="332" fill="none" stroke="#0E0E10" stroke-width="0.3" stroke-dasharray="2 3"/>
+
+        <!-- Cliente node -->
+        <circle cx="60" cy="80" r="28" fill="#FAF4EC" stroke="#0E0E10" stroke-width="1.2"/>
+        <text x="60" y="84" text-anchor="middle" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0E0E10">CLIENTE</text>
+
+        <!-- SAP center -->
+        <rect x="120" y="140" width="80" height="80" fill="url(#hatch1)" stroke="#0E0E10" stroke-width="1.5"/>
+        <rect x="120" y="140" width="80" height="20" fill="#0E0E10"/>
+        <text x="160" y="155" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAF4EC">SAP SD</text>
+        <text x="160" y="190" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="22" fill="#D85F1B">core</text>
+
+        <!-- Surrounding nodes -->
+        <rect x="232" y="60" width="68" height="38" fill="#FAF4EC" stroke="#0E0E10" stroke-width="1.2"/>
+        <text x="266" y="83" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#0E0E10">INVENTARIO</text>
+
+        <rect x="232" y="262" width="68" height="38" fill="#FAF4EC" stroke="#0E0E10" stroke-width="1.2"/>
+        <text x="266" y="285" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#0E0E10">FINANZAS</text>
+
+        <rect x="20" y="262" width="68" height="38" fill="#FAF4EC" stroke="#0E0E10" stroke-width="1.2"/>
+        <text x="54" y="285" text-anchor="middle" font-family="JetBrains Mono" font-size="8" fill="#0E0E10">ALMACÉN</text>
+
+        <!-- Connecting lines -->
+        <line x1="86" y1="98" x2="120" y2="160" stroke="#D85F1B" stroke-width="1.2"/>
+        <line x1="200" y1="160" x2="232" y2="92" stroke="#0E0E10" stroke-width="0.8" stroke-dasharray="3 2"/>
+        <line x1="200" y1="200" x2="232" y2="270" stroke="#0E0E10" stroke-width="0.8" stroke-dasharray="3 2"/>
+        <line x1="120" y1="200" x2="88" y2="270" stroke="#0E0E10" stroke-width="0.8" stroke-dasharray="3 2"/>
+
+        <!-- Caption -->
+        <text x="160" y="332" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="12" fill="#3A3C44">SD conecta cuatro mundos.</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 02 ============================ -->
+<section class="slide" data-step="2">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">02</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo dos — Cimientos</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          La base<br>
+          de <span class="italic-display text-burnt-600">todo</span>:<br>
+          datos maestros.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          Antes de vender, SAP necesita saber <em class="italic-display">quién</em> compra y <em class="italic-display">qué</em> se vende. Esos registros se llaman <strong>maestros</strong>, y son el cimiento de cada operación.
+        </p>
+
+        <div class="mt-12 grid sm:grid-cols-2 gap-10 reveal reveal-6">
+          <div class="border-t border-ink pt-4">
+            <div class="flex items-baseline justify-between mb-3">
+              <div class="font-display text-2xl">Cliente</div>
+              <div class="label text-ink-40">Tx. XD01</div>
+            </div>
+            <ul class="text-sm text-ink-80 leading-loose">
+              <li>— Razón social y RFC</li>
+              <li>— Dirección de facturación y envío</li>
+              <li>— Condiciones de pago</li>
+              <li>— Contactos y vendedor asignado</li>
+            </ul>
+          </div>
+          <div class="border-t border-ink pt-4">
+            <div class="flex items-baseline justify-between mb-3">
+              <div class="font-display text-2xl">Material</div>
+              <div class="label text-ink-40">Tx. MM01</div>
+            </div>
+            <ul class="text-sm text-ink-80 leading-loose">
+              <li>— Código y descripción</li>
+              <li>— Unidad de medida y peso</li>
+              <li>— Precio base</li>
+              <li>— Familia / categoría</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="mt-10 flex gap-4 items-start border-l-2 border-burnt-500 pl-4 reveal reveal-7">
+          <div>
+            <div class="label text-burnt-600 mb-1">Advertencia</div>
+            <p class="text-sm text-ink-80 leading-relaxed">Si un dato maestro está mal, todo el proceso falla. Pide siempre <strong>RFC verificado</strong> y <strong>uso CFDI</strong> al alta de cliente.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: two indexed cards -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 02 · Registros maestros</div>
+      <svg viewBox="0 0 320 380" class="w-full h-auto">
+        <!-- Card 1: Cliente -->
+        <g transform="translate(15 35) rotate(-3 130 90)">
+          <rect width="260" height="180" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1.2"/>
+          <rect width="260" height="22" fill="#0E0E10"/>
+          <text x="14" y="16" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAF4EC">CLIENTE · 100245</text>
+          <text x="240" y="16" text-anchor="end" font-family="JetBrains Mono" font-size="8" fill="#D85F1B">★</text>
+
+          <text x="20" y="50" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">RAZÓN SOCIAL</text>
+          <text x="20" y="66" font-family="Fraunces" font-size="14" font-weight="600" fill="#0E0E10">Acero MTY S.A. de C.V.</text>
+
+          <text x="20" y="92" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">RFC</text>
+          <text x="20" y="108" font-family="JetBrains Mono" font-size="11" fill="#0E0E10">AMT 123456 ABC</text>
+
+          <text x="20" y="134" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">CONDICIÓN DE PAGO</text>
+          <text x="20" y="150" font-family="Plus Jakarta Sans" font-size="11" fill="#0E0E10">30 días neto</text>
+
+          <line x1="0" y1="166" x2="260" y2="166" stroke="#0E0E10" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <text x="14" y="178" font-family="JetBrains Mono" font-size="7" fill="#9CA3AF">/// XD03 ///</text>
+        </g>
+
+        <!-- Card 2: Material -->
+        <g transform="translate(45 180) rotate(4 130 90)">
+          <rect width="260" height="180" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1.2"/>
+          <rect width="260" height="22" fill="#D85F1B"/>
+          <text x="14" y="16" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAF4EC">MATERIAL · ROL-GLV-18</text>
+
+          <text x="20" y="50" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">DESCRIPCIÓN</text>
+          <text x="20" y="66" font-family="Fraunces" font-size="14" font-weight="600" fill="#0E0E10">Rollo galvanizado cal. 18</text>
+
+          <text x="20" y="92" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">UNIDAD DE MEDIDA</text>
+          <text x="20" y="108" font-family="Plus Jakarta Sans" font-size="11" fill="#0E0E10">TON (tonelada métrica)</text>
+
+          <text x="20" y="134" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">PRECIO BASE</text>
+          <text x="20" y="150" font-family="JetBrains Mono" font-size="13" font-weight="700" fill="#0E0E10">$ 18,000.00 / TON</text>
+
+          <line x1="0" y1="166" x2="260" y2="166" stroke="#0E0E10" stroke-width="0.5" stroke-dasharray="2 2"/>
+          <text x="14" y="178" font-family="JetBrains Mono" font-size="7" fill="#9CA3AF">/// MM03 ///</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 03 ============================ -->
+<section class="slide" data-step="3">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">03</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo tres — El documento clave</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          El <span class="italic-display text-burnt-600">corazón</span><br>
+          del módulo:<br>
+          el pedido.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          El <strong>Pedido de Venta</strong> registra qué quiere comprar el cliente, cuánto, a qué precio y para cuándo. Es el punto de partida de todo lo que sigue.
+        </p>
+
+        <!-- Flow -->
+        <div class="mt-10 reveal reveal-6">
+          <div class="label text-ink-40 mb-4 marker">Flujo del proceso</div>
+          <div class="grid grid-cols-4 gap-2 items-center">
+            <div class="text-center">
+              <div class="font-mono text-2xl text-ink mb-1 tnum">01</div>
+              <div class="text-xs leading-tight">Cliente<br>solicita</div>
+            </div>
+            <div class="text-center text-ink-40">→</div>
+            <div class="text-center">
+              <div class="font-mono text-2xl text-ink mb-1 tnum">02</div>
+              <div class="text-xs leading-tight">Capturas<br>el pedido</div>
+            </div>
+            <div class="text-center text-ink-40">→</div>
+          </div>
+          <div class="grid grid-cols-4 gap-2 items-center mt-3">
+            <div class="text-center">
+              <div class="font-mono text-2xl text-ink mb-1 tnum">03</div>
+              <div class="text-xs leading-tight">SAP valida<br>(stock, crédito)</div>
+            </div>
+            <div class="text-center text-ink-40">→</div>
+            <div class="text-center">
+              <div class="font-mono text-2xl text-burnt-600 mb-1 tnum">04</div>
+              <div class="text-xs leading-tight font-semibold text-burnt-600">Pedido<br>confirmado ✓</div>
+            </div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- Required fields -->
+        <div class="mt-10 reveal reveal-7">
+          <div class="label text-ink-40 mb-4 marker">Lo que se captura</div>
+          <div class="grid sm:grid-cols-2 gap-x-8 gap-y-2 text-sm">
+            <div class="flex justify-between border-b border-ink/15 py-2"><span>Cliente</span><span class="font-mono text-ink-60 text-xs">por RFC / nombre</span></div>
+            <div class="flex justify-between border-b border-ink/15 py-2"><span>Material y cantidad</span><span class="font-mono text-ink-60 text-xs">código + unidad</span></div>
+            <div class="flex justify-between border-b border-ink/15 py-2"><span>Fecha de entrega</span><span class="font-mono text-ink-60 text-xs">dd-mm-aaaa</span></div>
+            <div class="flex justify-between border-b border-ink/15 py-2"><span>Lugar de entrega</span><span class="font-mono text-ink-60 text-xs">centro / planta</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: SAP-like form mockup, technical -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 03 · Captura del pedido</div>
+      <svg viewBox="0 0 320 400" class="w-full h-auto">
+        <rect x="10" y="10" width="300" height="380" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1.2"/>
+        <rect x="10" y="10" width="300" height="32" fill="#0E0E10"/>
+        <text x="22" y="30" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAF4EC">PEDIDO DE VENTA</text>
+        <rect x="252" y="20" width="46" height="14" fill="#D85F1B"/>
+        <text x="275" y="30" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#FAF4EC">VA01</text>
+
+        <text x="22" y="64" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">CLIENTE</text>
+        <line x1="22" y1="80" x2="298" y2="80" stroke="#0E0E10" stroke-width="0.5"/>
+        <text x="22" y="76" font-family="Fraunces" font-size="13" fill="#0E0E10">100245 — Acero MTY S.A. de C.V.</text>
+
+        <text x="22" y="106" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">MATERIAL</text>
+        <line x1="22" y1="122" x2="298" y2="122" stroke="#0E0E10" stroke-width="0.5"/>
+        <text x="22" y="118" font-family="Fraunces" font-size="13" fill="#0E0E10">ROL-GLV-18 — Rollo galv. cal. 18</text>
+
+        <text x="22" y="146" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">CANTIDAD</text>
+        <text x="22" y="170" font-family="JetBrains Mono" font-size="22" font-weight="700" fill="#0E0E10">5.000</text>
+        <text x="75" y="170" font-family="JetBrains Mono" font-size="12" fill="#6B6E78">TON</text>
+        <line x1="22" y1="178" x2="120" y2="178" stroke="#0E0E10" stroke-width="0.5"/>
+
+        <text x="140" y="146" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">FECHA DE ENTREGA</text>
+        <text x="140" y="170" font-family="JetBrains Mono" font-size="13" fill="#0E0E10">15 · 06 · 2026</text>
+        <line x1="140" y1="178" x2="298" y2="178" stroke="#0E0E10" stroke-width="0.5"/>
+
+        <text x="22" y="206" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">LUGAR DE ENTREGA</text>
+        <line x1="22" y1="222" x2="298" y2="222" stroke="#0E0E10" stroke-width="0.5"/>
+        <text x="22" y="218" font-family="Fraunces" font-size="13" fill="#0E0E10">Parque Industrial Apodaca, NL</text>
+
+        <line x1="22" y1="250" x2="298" y2="250" stroke="#0E0E10" stroke-width="0.5" stroke-dasharray="3 3"/>
+
+        <text x="22" y="270" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">PRECIO ESTIMADO</text>
+        <text x="22" y="306" font-family="Fraunces" font-style="italic" font-size="34" font-weight="500" fill="#D85F1B">$ 104,400</text>
+        <text x="22" y="324" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">MXN · IVA incluido</text>
+
+        <rect x="22" y="342" width="276" height="36" fill="#0E0E10"/>
+        <text x="160" y="364" text-anchor="middle" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#FAF4EC">GUARDAR PEDIDO</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 04 ============================ -->
+<section class="slide" data-step="4">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">04</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo cuatro — Logística</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          Del almacén<br>
+          a <span class="italic-display text-burnt-600">tu cliente</span>.<br>
+          La entrega.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          Confirmado el pedido, SAP genera una <strong>Entrega</strong>. Esta coordina el almacén (preparar el material) y el embarque (cargar al transporte) hasta la <em class="italic-display">salida de mercancía</em>.
+        </p>
+
+        <!-- Four steps as a vertical numbered list with marker lines -->
+        <div class="mt-10 reveal reveal-6">
+          <div class="grid grid-cols-12 items-baseline gap-4 py-4 border-t border-ink/20">
+            <div class="col-span-2 font-mono tnum text-3xl text-ink">i</div>
+            <div class="col-span-10">
+              <div class="font-display text-xl">Picking</div>
+              <div class="text-sm text-ink-80">Almacén arma el pedido — recoge el material de la ubicación correcta.</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-12 items-baseline gap-4 py-4 border-t border-ink/20">
+            <div class="col-span-2 font-mono tnum text-3xl text-ink">ii</div>
+            <div class="col-span-10">
+              <div class="font-display text-xl">Packing</div>
+              <div class="text-sm text-ink-80">Se empaca, etiqueta y se prepara para embarque.</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-12 items-baseline gap-4 py-4 border-t border-ink/20">
+            <div class="col-span-2 font-mono tnum text-3xl text-ink">iii</div>
+            <div class="col-span-10">
+              <div class="font-display text-xl">Embarque</div>
+              <div class="text-sm text-ink-80">Se carga al transporte: camión, tráiler, plataforma.</div>
+            </div>
+          </div>
+          <div class="grid grid-cols-12 items-baseline gap-4 py-4 border-t border-b border-burnt-500 bg-burnt-500/5 px-2 rounded">
+            <div class="col-span-2 font-mono tnum text-3xl text-burnt-600 font-bold">iv</div>
+            <div class="col-span-10">
+              <div class="font-display text-xl text-burnt-700">Salida de mercancía <span class="font-mono text-sm">(GI)</span></div>
+              <div class="text-sm text-ink-80">SAP descuenta el material del inventario. <strong>Sin este paso, el stock no baja.</strong></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: technical truck blueprint -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 04 · Diagrama de embarque</div>
+      <svg viewBox="0 0 320 380" class="w-full h-auto">
+        <defs>
+          <pattern id="hatch2" patternUnits="userSpaceOnUse" width="5" height="5" patternTransform="rotate(45)">
+            <line x1="0" y1="0" x2="0" y2="5" stroke="#0E0E10" stroke-width="0.3" opacity="0.4"/>
+          </pattern>
+        </defs>
+
+        <!-- Frame ground -->
+        <line x1="20" y1="300" x2="300" y2="300" stroke="#0E0E10" stroke-width="0.8"/>
+        <line x1="20" y1="304" x2="300" y2="304" stroke="#0E0E10" stroke-width="0.3" stroke-dasharray="3 3"/>
+
+        <!-- Truck cab -->
+        <rect x="30" y="190" width="65" height="80" fill="#0E0E10"/>
+        <rect x="38" y="200" width="50" height="35" fill="#FFFCF7"/>
+        <line x1="63" y1="200" x2="63" y2="235" stroke="#0E0E10" stroke-width="1"/>
+
+        <!-- Truck cargo box -->
+        <rect x="95" y="160" width="180" height="110" fill="url(#hatch2)" stroke="#0E0E10" stroke-width="1.5"/>
+        <rect x="95" y="160" width="180" height="20" fill="#D85F1B"/>
+        <text x="185" y="175" text-anchor="middle" font-family="JetBrains Mono" font-size="10" font-weight="700" fill="#FAF4EC">GILM TRANSPORTE</text>
+
+        <!-- Boxes inside (visual hint) -->
+        <rect x="110" y="195" width="50" height="55" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="170" y="205" width="40" height="45" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="220" y="195" width="45" height="55" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+
+        <!-- Wheels -->
+        <circle cx="55" cy="298" r="18" fill="#0E0E10"/>
+        <circle cx="55" cy="298" r="6" fill="#FAF4EC"/>
+        <circle cx="140" cy="298" r="18" fill="#0E0E10"/>
+        <circle cx="140" cy="298" r="6" fill="#FAF4EC"/>
+        <circle cx="200" cy="298" r="18" fill="#0E0E10"/>
+        <circle cx="200" cy="298" r="6" fill="#FAF4EC"/>
+        <circle cx="245" cy="298" r="18" fill="#0E0E10"/>
+        <circle cx="245" cy="298" r="6" fill="#FAF4EC"/>
+
+        <!-- Measurement annotations -->
+        <line x1="30" y1="335" x2="275" y2="335" stroke="#0E0E10" stroke-width="0.5"/>
+        <line x1="30" y1="330" x2="30" y2="340" stroke="#0E0E10" stroke-width="0.5"/>
+        <line x1="275" y1="330" x2="275" y2="340" stroke="#0E0E10" stroke-width="0.5"/>
+        <text x="152" y="350" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">5 TON · ROL-GLV-18</text>
+
+        <!-- Arrow path (route) -->
+        <path d="M 50 70 Q 150 50, 250 90" fill="none" stroke="#D85F1B" stroke-width="1.5" stroke-dasharray="4 3"/>
+        <polygon points="245,85 256,93 247,98" fill="#D85F1B"/>
+        <text x="150" y="50" text-anchor="middle" font-family="Fraunces" font-style="italic" font-size="13" fill="#0E0E10">Apodaca → Cliente</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 05 ============================ -->
+<section class="slide" data-step="5">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">05</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo cinco — Cobranza</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          Cobrar<br>
+          lo <span class="italic-display text-burnt-600">entregado</span>.<br>
+          Facturación.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          Después de la entrega se emite la <strong>factura</strong>. En México, esto significa <strong>timbrar el CFDI</strong> ante el SAT antes de enviarla al cliente.
+        </p>
+
+        <!-- Secuencia -->
+        <div class="mt-10 reveal reveal-6">
+          <div class="label text-ink-40 mb-4 marker">Secuencia</div>
+          <div class="flex items-center flex-wrap gap-3 text-xs font-mono uppercase tracking-wider">
+            <span class="px-3 py-2 border border-ink">Entrega completa</span>
+            <span class="text-ink-40">→</span>
+            <span class="px-3 py-2 border border-ink">Facturar</span>
+            <span class="text-ink-40">→</span>
+            <span class="px-3 py-2 bg-burnt-500 text-cream-100 border border-burnt-500 font-bold">Timbrar CFDI</span>
+            <span class="text-ink-40">→</span>
+            <span class="px-3 py-2 border border-ink">Enviar al cliente</span>
+          </div>
+        </div>
+
+        <!-- Data table -->
+        <div class="mt-10 reveal reveal-7">
+          <div class="label text-ink-40 mb-4 marker">Datos clave del CFDI</div>
+          <table class="w-full text-sm">
+            <tbody>
+              <tr class="border-t border-ink/20">
+                <td class="py-3 pr-4 w-40 label text-ink-60">Total con IVA</td>
+                <td class="py-3 text-ink-80">Calculado automáticamente por SAP</td>
+              </tr>
+              <tr class="border-t border-ink/20">
+                <td class="py-3 pr-4 label text-ink-60">Forma de pago</td>
+                <td class="py-3 text-ink-80 font-mono">01 · 03 · 04 · 99</td>
+              </tr>
+              <tr class="border-t border-ink/20">
+                <td class="py-3 pr-4 label text-ink-60">Método de pago</td>
+                <td class="py-3 text-ink-80 font-mono">PUE · PPD</td>
+              </tr>
+              <tr class="border-t border-b border-ink/20">
+                <td class="py-3 pr-4 label text-ink-60">Uso CFDI</td>
+                <td class="py-3 text-ink-80 font-mono">G01 · G03 · P01</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-8 flex gap-4 items-start border-l-2 border-burnt-500 pl-4 reveal reveal-7">
+          <div>
+            <div class="label text-burnt-600 mb-1">Verificación</div>
+            <p class="text-sm text-ink-80 leading-relaxed">El CFDI <strong>solo vale cuando está timbrado por el SAT</strong>. Confirma que tenga <em class="italic-display">folio fiscal (UUID)</em> antes de enviarlo.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: invoice (editorial style) -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 05 · CFDI emitido</div>
+      <svg viewBox="0 0 320 420" class="w-full h-auto">
+        <rect x="20" y="10" width="280" height="400" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1.2"/>
+
+        <!-- Header strip -->
+        <rect x="20" y="10" width="280" height="48" fill="#0E0E10"/>
+        <text x="34" y="32" font-family="JetBrains Mono" font-size="10" fill="#9CA3AF">COMPROBANTE</text>
+        <text x="34" y="48" font-family="Fraunces" font-style="italic" font-size="16" font-weight="600" fill="#FAF4EC">Factura · CFDI</text>
+        <text x="286" y="46" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#D85F1B">v.4.0</text>
+
+        <!-- Folio + fecha -->
+        <text x="34" y="80" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">FOLIO</text>
+        <text x="34" y="95" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0E0E10">F-2026-001245</text>
+
+        <text x="190" y="80" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">FECHA</text>
+        <text x="190" y="95" font-family="JetBrains Mono" font-size="11" font-weight="700" fill="#0E0E10">20 may 2026</text>
+
+        <line x1="34" y1="108" x2="286" y2="108" stroke="#0E0E10" stroke-width="0.5"/>
+
+        <!-- Cliente -->
+        <text x="34" y="128" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">RECEPTOR</text>
+        <text x="34" y="146" font-family="Fraunces" font-size="13" font-weight="600" fill="#0E0E10">Acero MTY S.A. de C.V.</text>
+        <text x="34" y="161" font-family="JetBrains Mono" font-size="9" fill="#3A3C44">RFC · AMT 123456 ABC</text>
+
+        <line x1="34" y1="178" x2="286" y2="178" stroke="#0E0E10" stroke-width="0.5"/>
+
+        <!-- Linea concepto -->
+        <text x="34" y="198" font-family="Plus Jakarta Sans" font-size="10" fill="#3A3C44">5 TON · Rollo galvanizado cal. 18</text>
+        <text x="286" y="198" text-anchor="end" font-family="JetBrains Mono" font-size="11" font-weight="600" fill="#0E0E10">$ 90,000.00</text>
+
+        <line x1="34" y1="216" x2="286" y2="216" stroke="#0E0E10" stroke-width="0.3" stroke-dasharray="2 2"/>
+
+        <!-- Totales -->
+        <text x="170" y="240" font-family="Plus Jakarta Sans" font-size="11" fill="#3A3C44">Subtotal</text>
+        <text x="286" y="240" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#0E0E10">$ 90,000.00</text>
+
+        <text x="170" y="260" font-family="Plus Jakarta Sans" font-size="11" fill="#3A3C44">IVA 16%</text>
+        <text x="286" y="260" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#0E0E10">$ 14,400.00</text>
+
+        <!-- Total destacado -->
+        <rect x="34" y="278" width="252" height="56" fill="#0E0E10"/>
+        <text x="48" y="304" font-family="JetBrains Mono" font-size="10" fill="#9CA3AF">TOTAL</text>
+        <text x="48" y="324" font-family="Fraunces" font-size="22" font-weight="700" fill="#FAF4EC">$ 104,400.00</text>
+        <text x="270" y="324" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#D85F1B">MXN</text>
+
+        <!-- UUID -->
+        <text x="34" y="358" font-family="JetBrains Mono" font-size="8" fill="#6B6E78">FOLIO FISCAL · UUID</text>
+        <text x="34" y="376" font-family="JetBrains Mono" font-size="8.5" fill="#0E0E10">A1B2C3D4 · E5F6 · 7890</text>
+        <text x="34" y="388" font-family="JetBrains Mono" font-size="8.5" fill="#0E0E10">ABCD · EF12 3456 7890</text>
+
+        <!-- Stamp -->
+        <g transform="translate(220 350) rotate(-12)">
+          <rect x="0" y="0" width="64" height="40" fill="none" stroke="#D85F1B" stroke-width="1.5"/>
+          <text x="32" y="18" text-anchor="middle" font-family="JetBrains Mono" font-size="8" font-weight="700" fill="#D85F1B">TIMBRADO</text>
+          <text x="32" y="32" text-anchor="middle" font-family="JetBrains Mono" font-size="7" fill="#D85F1B">SAT · OK</text>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 06 ============================ -->
+<section class="slide" data-step="6">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">06</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo seis — Cálculos</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          Precios,<br>
+          <span class="italic-display text-burnt-600">descuentos</span><br>
+          e impuestos.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          SAP calcula el precio del pedido automáticamente aplicando una secuencia de <em class="italic-display">condiciones</em>: precio base, descuentos, promociones e IVA.
+        </p>
+
+        <!-- Condition codes table -->
+        <div class="mt-10 reveal reveal-6">
+          <div class="label text-ink-40 mb-4 marker">Códigos de condición</div>
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-y border-ink">
+                <th class="py-2 text-left label text-ink-60 w-20">Código</th>
+                <th class="py-2 text-left label text-ink-60">Descripción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="border-b border-ink/15">
+                <td class="py-3 font-mono font-bold text-burnt-600">PR00</td>
+                <td class="py-3 text-ink-80">Precio base del material</td>
+              </tr>
+              <tr class="border-b border-ink/15">
+                <td class="py-3 font-mono font-bold text-burnt-600">K007</td>
+                <td class="py-3 text-ink-80">Descuento por cliente</td>
+              </tr>
+              <tr class="border-b border-ink/15">
+                <td class="py-3 font-mono font-bold text-burnt-600">K029</td>
+                <td class="py-3 text-ink-80">Descuento por volumen</td>
+              </tr>
+              <tr class="border-b border-ink/15">
+                <td class="py-3 font-mono font-bold text-burnt-600">MWST</td>
+                <td class="py-3 text-ink-80">IVA — impuesto al valor agregado</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="mt-10 flex gap-4 items-start border-l-2 border-burnt-500 pl-4 reveal reveal-7">
+          <div>
+            <div class="label text-burnt-600 mb-1">Cómo investigar</div>
+            <p class="text-sm text-ink-80 leading-relaxed">Si un precio no te cuadra, abre el <strong>desglose de condiciones</strong> en la posición del pedido. Ahí ves cada línea con su importe y la regla que la aplicó.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: receipt-style breakdown -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 06 · Desglose</div>
+      <svg viewBox="0 0 320 440" class="w-full h-auto">
+        <!-- Receipt-like ticket -->
+        <path d="M 30 10 L 290 10 L 290 410 L 280 420 L 270 410 L 260 420 L 250 410 L 240 420 L 230 410 L 220 420 L 210 410 L 200 420 L 190 410 L 180 420 L 170 410 L 160 420 L 150 410 L 140 420 L 130 410 L 120 420 L 110 410 L 100 420 L 90 410 L 80 420 L 70 410 L 60 420 L 50 410 L 40 420 L 30 410 Z" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1.2"/>
+
+        <!-- Header -->
+        <text x="50" y="36" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">DOCUMENTO 5000123456</text>
+        <text x="50" y="60" font-family="Fraunces" font-size="16" font-weight="700" fill="#0E0E10">Desglose de Precio</text>
+        <line x1="50" y1="74" x2="270" y2="74" stroke="#0E0E10" stroke-width="0.5"/>
+
+        <!-- Items -->
+        <text x="50"  y="100" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0E0E10">PR00</text>
+        <text x="90"  y="100" font-family="Plus Jakarta Sans" font-size="10" fill="#3A3C44">Precio base</text>
+        <text x="270" y="100" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#0E0E10">$ 100.00</text>
+
+        <text x="50"  y="124" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0E0E10">K029</text>
+        <text x="90"  y="124" font-family="Plus Jakarta Sans" font-size="10" fill="#3A3C44">Dto. volumen · 10%</text>
+        <text x="270" y="124" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#D85F1B">−$ 10.00</text>
+
+        <line x1="50" y1="138" x2="270" y2="138" stroke="#0E0E10" stroke-width="0.3" stroke-dasharray="2 2"/>
+
+        <text x="50"  y="160" font-family="Plus Jakarta Sans" font-size="10" font-weight="600" fill="#0E0E10">Subtotal</text>
+        <text x="270" y="160" text-anchor="end" font-family="JetBrains Mono" font-size="11" font-weight="600" fill="#0E0E10">$ 90.00</text>
+
+        <text x="50"  y="184" font-family="JetBrains Mono" font-size="9" font-weight="700" fill="#0E0E10">MWST</text>
+        <text x="90"  y="184" font-family="Plus Jakarta Sans" font-size="10" fill="#3A3C44">IVA · 16%</text>
+        <text x="270" y="184" text-anchor="end" font-family="JetBrains Mono" font-size="11" fill="#0E0E10">$ 14.40</text>
+
+        <line x1="50" y1="200" x2="270" y2="200" stroke="#0E0E10" stroke-width="1"/>
+
+        <!-- Big total -->
+        <text x="50" y="232" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">TOTAL · MXN</text>
+        <text x="50" y="280" font-family="Fraunces" font-style="italic" font-size="44" font-weight="700" fill="#D85F1B">$ 104.40</text>
+
+        <line x1="50" y1="306" x2="270" y2="306" stroke="#0E0E10" stroke-width="0.5" stroke-dasharray="3 3"/>
+
+        <text x="50" y="328" font-family="Fraunces" font-style="italic" font-size="11" fill="#3A3C44">
+          <tspan>Calculado por SAP</tspan>
+        </text>
+        <text x="50" y="346" font-family="Fraunces" font-style="italic" font-size="11" fill="#3A3C44">
+          <tspan>siguiendo la tabla de</tspan>
+        </text>
+        <text x="50" y="364" font-family="Fraunces" font-style="italic" font-size="11" fill="#3A3C44">
+          <tspan>condiciones del módulo SD.</tspan>
+        </text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 07 ============================ -->
+<section class="slide" data-step="7">
+  <div class="grid grid-cols-12 gap-8 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-4 reveal reveal-1">07</div>
+
+      <div class="relative">
+        <div class="marker label text-burnt-600 mb-8 reveal reveal-2">Capítulo siete — Cierre</div>
+
+        <h2 class="font-display-light text-5xl lg:text-7xl leading-[1.05] mb-8 reveal reveal-3">
+          Información<br>
+          <span class="italic-display text-burnt-600">a la mano</span>.<br>
+          Reportes.
+        </h2>
+
+        <div class="rule-tech label reveal reveal-4"><span class="text-ink-60">§</span></div>
+
+        <p class="text-lg leading-relaxed text-ink-80 mt-8 max-w-prose reveal reveal-5">
+          SAP SD trae reportes para que veas el estado de tus pedidos y entregas sin tener que pedirlo a TI.
+        </p>
+
+        <!-- Reports list -->
+        <div class="mt-10 reveal reveal-6">
+          <div class="label text-ink-40 mb-4 marker">Transacciones más usadas</div>
+          <div class="space-y-0">
+            <div class="flex items-baseline gap-6 py-4 border-t border-ink/20">
+              <div class="font-mono text-2xl font-bold text-burnt-600 w-20 tnum">VA05</div>
+              <div class="flex-1">
+                <div class="font-display text-base">Lista de pedidos</div>
+                <div class="text-xs text-ink-60">por cliente / vendedor / rango de fechas</div>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-6 py-4 border-t border-ink/20">
+              <div class="font-mono text-2xl font-bold text-burnt-600 w-20 tnum">VL06</div>
+              <div class="flex-1">
+                <div class="font-display text-base">Lista de entregas</div>
+                <div class="text-xs text-ink-60">pendientes, del día, vencidas</div>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-6 py-4 border-t border-ink/20">
+              <div class="font-mono text-2xl font-bold text-burnt-600 w-20 tnum">VF05</div>
+              <div class="flex-1">
+                <div class="font-display text-base">Facturas emitidas</div>
+                <div class="text-xs text-ink-60">en un periodo, con filtros por cliente</div>
+              </div>
+            </div>
+            <div class="flex items-baseline gap-6 py-4 border-t border-b border-ink/20">
+              <div class="font-mono text-2xl font-bold text-burnt-600 w-20 tnum">MC+E</div>
+              <div class="flex-1">
+                <div class="font-display text-base">Ventas por material</div>
+                <div class="text-xs text-ink-60">análisis mensual, anual, por categoría</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Closing card -->
+        <div class="mt-12 bg-ink text-cream-100 p-10 relative overflow-hidden reveal reveal-7">
+          <div class="absolute -top-8 -right-8 text-burnt-500/20 font-display text-[180px] leading-none select-none">FIN</div>
+          <div class="relative">
+            <div class="label text-burnt-400 mb-3 marker">Cierre del manual</div>
+            <h3 class="font-display-light text-4xl mb-3">
+              Listo. Conoces ya<br>lo <span class="italic-display text-burnt-400">esencial</span> de SD.
+            </h3>
+            <div class="mt-6 space-y-2 text-sm">
+              <div class="flex items-center gap-3 border-b border-cream-100/15 py-2">
+                <span class="label text-burnt-400 w-32">Key User SD</span>
+                <span>Consulta para procesos específicos</span>
+              </div>
+              <div class="flex items-center gap-3 border-b border-cream-100/15 py-2">
+                <span class="label text-burnt-400 w-32">Soporte TI</span>
+                <span class="font-mono">ti@gilm.com.mx</span>
+              </div>
+              <div class="flex items-center gap-3 py-2">
+                <span class="label text-burnt-400 w-32">Manual completo</span>
+                <span>Portal interno de capacitación</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Illustration: bar chart editorial -->
+    <div class="col-span-12 lg:col-span-5 lg:pl-8 lg:border-l lg:border-ink/15 reveal reveal-7">
+      <div class="label text-ink-40 mb-4 marker">Fig. 07 · Ventas semestre</div>
+      <svg viewBox="0 0 320 380" class="w-full h-auto">
+        <!-- Axes -->
+        <line x1="40" y1="60" x2="40" y2="300" stroke="#0E0E10" stroke-width="0.8"/>
+        <line x1="40" y1="300" x2="300" y2="300" stroke="#0E0E10" stroke-width="0.8"/>
+
+        <!-- Gridlines -->
+        <line x1="40" y1="240" x2="300" y2="240" stroke="#0E0E10" stroke-width="0.2" stroke-dasharray="2 2"/>
+        <line x1="40" y1="180" x2="300" y2="180" stroke="#0E0E10" stroke-width="0.2" stroke-dasharray="2 2"/>
+        <line x1="40" y1="120" x2="300" y2="120" stroke="#0E0E10" stroke-width="0.2" stroke-dasharray="2 2"/>
+
+        <!-- Y labels -->
+        <text x="32" y="304" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">0</text>
+        <text x="32" y="244" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">50</text>
+        <text x="32" y="184" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">100</text>
+        <text x="32" y="124" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">150</text>
+
+        <!-- Bars -->
+        <rect x="60"  y="220" width="28" height="80" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="100" y="200" width="28" height="100" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="140" y="170" width="28" height="130" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="180" y="190" width="28" height="110" fill="#FFFCF7" stroke="#0E0E10" stroke-width="1"/>
+        <rect x="220" y="140" width="28" height="160" fill="#D85F1B"/>
+        <rect x="260" y="100" width="28" height="200" fill="#D85F1B"/>
+
+        <!-- X labels -->
+        <text x="74"  y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">Dic</text>
+        <text x="114" y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">Ene</text>
+        <text x="154" y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">Feb</text>
+        <text x="194" y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">Mar</text>
+        <text x="234" y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">Abr</text>
+        <text x="274" y="318" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#0E0E10">May</text>
+
+        <!-- Tendencia -->
+        <path d="M 74 260 L 114 240 L 154 220 L 194 230 L 234 190 L 274 160" fill="none" stroke="#0E0E10" stroke-width="1.2" stroke-dasharray="3 2"/>
+        <circle cx="274" cy="160" r="4" fill="#D85F1B" stroke="#0E0E10" stroke-width="1"/>
+
+        <!-- Caption -->
+        <text x="40" y="355" font-family="Fraunces" font-style="italic" font-size="13" fill="#0E0E10">+42% vs. semestre anterior.</text>
+        <text x="40" y="372" font-family="JetBrains Mono" font-size="9" fill="#6B6E78">Reporte VA05 · MC+E</text>
+      </svg>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="border-t border-ink/20 bg-cream-100/80 backdrop-blur sticky bottom-0 z-20">
+  <div class="max-w-7xl mx-auto px-8 py-5 flex items-center justify-between gap-4">
+    <button id="prev-btn" class="btn btn-ghost px-5 py-3 flex items-center gap-2">
+      <span>← </span>
+      <span>Anterior</span>
+    </button>
+
+    <div class="hidden md:flex items-center gap-4 text-ink-60">
+      <span class="label">Navega</span>
+      <span class="flex gap-1"><kbd>←</kbd><kbd>→</kbd></span>
+      <span class="label">Pantalla completa</span>
+      <kbd>F</kbd>
+    </div>
+
+    <button id="next-btn" class="btn btn-dark px-5 py-3 flex items-center gap-2">
+      <span>Siguiente</span>
+      <span> →</span>
+    </button>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  const stepper = document.getElementById('stepper');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const currentStepEl = document.getElementById('current-step');
+  const totalStepsEl = document.getElementById('total-steps');
+  let current = 0;
+
+  // Build stepper: dot + label
+  const labels = ['Intro','Maestros','Pedido','Entrega','Factura','Precios','Reportes'];
+  let html = '';
+  for (let i = 0; i < total; i++) {
+    html += `
+      <button data-go="${i}" class="group flex flex-col items-start gap-1.5" title="${labels[i]}">
+        <span class="step-dot"></span>
+        <span class="label text-ink-40 group-hover:text-ink transition-colors" style="font-size:9px;">${String(i+1).padStart(2,'0')} · ${labels[i]}</span>
+      </button>
+    `;
+    if (i < total - 1) html += `<div class="flex-1 h-px bg-ink/15 mt-1.5"></div>`;
+  }
+  stepper.innerHTML = html;
+
+  const dots = Array.from(stepper.querySelectorAll('.step-dot'));
+  totalStepsEl.textContent = String(total).padStart(2,'0');
+
+  function go(i) {
+    if (i < 0 || i >= total) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    currentStepEl.textContent = String(current + 1).padStart(2,'0');
+
+    dots.forEach((d, idx) => {
+      d.classList.remove('active','completed');
+      if (idx < current) d.classList.add('completed');
+      else if (idx === current) d.classList.add('active');
+    });
+
+    prevBtn.disabled = (current === 0);
+    nextBtn.disabled = (current === total - 1);
+    nextBtn.innerHTML = (current === total - 1)
+      ? '<span>Finalizar</span><span> ✓</span>'
+      : '<span>Siguiente</span><span> →</span>';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  prevBtn.addEventListener('click', () => go(current - 1));
+  nextBtn.addEventListener('click', () => go(current + 1));
+  Array.from(stepper.querySelectorAll('button')).forEach((b, i) => {
+    b.addEventListener('click', () => go(i));
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft')  go(current - 1);
+    if (e.key === 'ArrowRight') go(current + 1);
+    if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  go(0);
+})();
+</script>
+
+</body>
+</html>
