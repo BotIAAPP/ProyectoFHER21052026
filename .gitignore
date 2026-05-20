@@ -1,0 +1,30 @@
+# Sistema
+Thumbs.db
+.DS_Store
+desktop.ini
+
+# Temporales y backups
+*.tmp
+*.bak
+~$*
+*~
+
+# Logs
+*.log
+
+# Datos potencialmente sensibles
+*.config.json
+.env
+.env.*
+secrets.*
+credentials.*
+
+# Editores
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Archivos de Office abiertos
+~$*.xlsx
+~$*.docx

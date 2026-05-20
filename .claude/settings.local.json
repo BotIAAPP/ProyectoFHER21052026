@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "WebFetch(domain:www.gamamateriales.com)",
+      "WebFetch(domain:www.acerosleija.com)",
+      "WebFetch(domain:www.acerostregonza.com)",
+      "WebFetch(domain:www.kloecknermetals.com)",
+      "WebFetch(domain:maxacero.mx)",
+      "WebFetch(domain:www.acerosyserviciosdemonterrey.com)",
+      "WebFetch(domain:fort-acero.com)",
+      "WebFetch(domain:mpsaceros.com)",
+      "WebFetch(domain:materialesyacerosapodaca.com)",
+      "WebFetch(domain:www.acerosylaminaslusa.com)",
+      "WebFetch(domain:integrinox.com)",
+      "WebFetch(domain:www.laminascavazos.com)",
+      "WebFetch(domain:www.acerosymaterialesmty.com)",
+      "WebFetch(domain:www.aceros-trevino.com)",
+      "WebFetch(domain:amcen.ternium.com)",
+      "WebFetch(domain:www.aceromart.com)",
+      "WebFetch(domain:acerotek.com.mx)",
+      "WebFetch(domain:acerosescobedo.com)",
+      "WebFetch(domain:www.laminasyprefabricadosramirez.com)",
+      "WebFetch(domain:www.galvasid.com)",
+      "WebFetch(domain:acerosfercom.com)",
+      "PowerShell(& \"C:\\\\Users\\\\FernandoHernándezCas\\\\.claude\\\\skills\\\\proveedores-acero-mty\\\\scripts\\\\csv-to-xlsx.ps1\" -CsvPath \"C:\\\\Users\\\\FernandoHernándezCas\\\\IA-WARP\\\\Code\\\\Proyecto1\\\\proveedores-acero-mty-20260520-1155.csv\")",
+      "PowerShell(gh auth *)"
+    ]
+  }
+}

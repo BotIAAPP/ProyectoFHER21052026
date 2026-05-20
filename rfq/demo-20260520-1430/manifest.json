@@ -1,0 +1,50 @@
+{
+  "batch_id": "demo-20260520-1430",
+  "created_at": "2026-05-20T14:30:00-06:00",
+  "is_demo": true,
+  "demo_note": "Archivos de ejemplo para evaluar el diseño del agente cotizador-acero-mty. Placeholders <TU ...> indican datos del solicitante que se llenarán desde cotizador-acero-mty.config.json una vez implementado el agente.",
+  "rfq_count": 3,
+  "specifications": {
+    "tipo": "Galvanizado",
+    "calibre": "18",
+    "espesor_aprox_mm": 1.214,
+    "ancho": "1.22 m (48\")",
+    "cantidad": "5 toneladas",
+    "acabado": "Estándar comercial",
+    "lugar_entrega": "Parque Industrial Apodaca, NL",
+    "fecha_requerida": "2026-06-15",
+    "moneda": "MXN",
+    "incluir_iva": false
+  },
+  "source_csv": "proveedores-acero-mty-20260520-1155.csv",
+  "filter_applied": "Tipo/Calibre contiene 'galvanizado' Y Email no vacío",
+  "rfqs": [
+    {
+      "rfq_id": "RFQ-DEMO-01",
+      "proveedor": "Galvasid S.A. de C.V.",
+      "municipio": "Apodaca",
+      "email": "contacto@galvasid.com",
+      "telefono": "+52 (81) 1156-0000",
+      "file": "RFQ-DEMO-01-Galvasid.eml",
+      "rationale": "Especialistas en galvanizado (rollos, hojas, cintas)"
+    },
+    {
+      "rfq_id": "RFQ-DEMO-02",
+      "proveedor": "LÁMINAS Y PRODUCTOS LUSA",
+      "municipio": "Monterrey",
+      "email": "ventas@laminaslusa.com.mx",
+      "telefono": "81-8114-5626",
+      "file": "RFQ-DEMO-02-LUSA.eml",
+      "rationale": "Maneja lámina galvanizada, +35 años, entregas en AMM"
+    },
+    {
+      "rfq_id": "RFQ-DEMO-03",
+      "proveedor": "Aceros Treviño",
+      "municipio": "Monterrey",
+      "email": "ventas@acerostrevino.com.mx",
+      "telefono": "81-8144-8000",
+      "file": "RFQ-DEMO-03-Trevino.eml",
+      "rationale": "Maneja lámina galvanizada y rolado en frío/caliente"
+    }
+  ]
+}
