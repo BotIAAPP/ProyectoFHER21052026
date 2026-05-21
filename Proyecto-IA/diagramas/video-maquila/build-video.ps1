@@ -71,7 +71,7 @@ Cinco áreas intervienen en el flujo.
 <break time="300ms"/>
 Ventas captura el pedido.
 <break time="200ms"/>
-Planeación corre el <say-as interpret-as="spell-out">MRP</say-as>.
+Planeación calcula los requerimientos de material.
 <break time="200ms"/>
 Producción fabrica.
 <break time="200ms"/>
@@ -94,7 +94,7 @@ ancho cuarenta y ocho pulgadas,
 con flor regular,
 color blanco mate.
 <break time="400ms"/>
-Esa combinación nunca la tenemos en stock.
+Esa combinación nunca la tenemos en existencia.
 La fabricamos cuando él la pide.
 '@,
 
@@ -119,7 +119,7 @@ Las opciones se filtran solas según las que ya elegimos.
 ¿El cliente nos da su propia materia prima?
 <break time="500ms"/>
 Si la respuesta es sí,
-vamos al escenario <say-as interpret-as="spell-out">CFM</say-as>.
+vamos al escenario con material del cliente.
 <break time="300ms"/>
 Si la respuesta es no,
 nosotros ponemos el material y cobramos todo.
@@ -127,7 +127,7 @@ nosotros ponemos el material y cobramos todo.
 
 # 7 · Step 3 CFM
 @'
-<emphasis>Paso tres. Variante <say-as interpret-as="spell-out">CFM</say-as>.</emphasis>
+<emphasis>Paso tres. Variante con material del cliente.</emphasis>
 <break time="400ms"/>
 Si el cliente nos manda sus rollos,
 los recibimos a un compartimento especial.
@@ -145,7 +145,7 @@ Las mermas también se descuentan de su lote.
 <emphasis>Paso tres. Variante estándar.</emphasis>
 <break time="400ms"/>
 Si nosotros ponemos el material,
-planeación corre el <say-as interpret-as="spell-out">MRP</say-as>
+planeación calcula los requerimientos de material
 y reserva la cantidad exacta etiquetada con el número de pedido.
 <break time="400ms"/>
 Ese material ya tiene dueño.
@@ -172,7 +172,7 @@ Solo aparecen los pasos y materiales que aplican a esa variante.
 <break time="300ms"/>
 La fábrica corta, procesa y confirma cada operación.
 <break time="400ms"/>
-Si el flujo es <say-as interpret-as="spell-out">CFM</say-as>,
+Si el material es del cliente,
 la orden consume el material del cliente,
 no el nuestro.
 '@,
@@ -185,7 +185,7 @@ El producto terminado entra a inventario,
 <break time="200ms"/>
 pero apartado.
 <break time="400ms"/>
-No entra al stock libre,
+No entra a las existencias libres,
 sino a un compartimento reservado para ese pedido.
 <break time="300ms"/>
 Aparece bajo el cliente y el número de pedido.
@@ -197,7 +197,7 @@ Aparece bajo el cliente y el número de pedido.
 <break time="300ms"/>
 Se prepara la entrega y sale al cliente.
 <break time="400ms"/>
-Almacén hace picking del material apartado,
+Almacén prepara y surte el material apartado,
 lo carga al transporte,
 y registra la salida.
 '@,
@@ -208,7 +208,7 @@ y registra la salida.
 <break time="300ms"/>
 Le facturamos al cliente.
 <break time="400ms"/>
-Si el flujo es <say-as interpret-as="spell-out">CFM</say-as>,
+Si el material es del cliente,
 la factura cobra solo el servicio de maquila,
 no el material.
 <break time="300ms"/>
@@ -222,21 +222,21 @@ material más servicio.
 <break time="400ms"/>
 Términos clave:
 <break time="200ms"/>
-<sub alias="meik tu order">make to order</sub>,
+fabricación contra pedido,
 <break time="200ms"/>
 material configurable,
 <break time="200ms"/>
-<say-as interpret-as="spell-out">MRP</say-as>,
+planeación de requerimientos de material,
 <break time="200ms"/>
-stock especial <say-as interpret-as="spell-out">E</say-as>,
+inventario reservado del pedido,
 <break time="200ms"/>
-<say-as interpret-as="spell-out">CFM</say-as>,
+material proporcionado por el cliente,
 <break time="200ms"/>
-stock especial <say-as interpret-as="spell-out">O</say-as>,
+inventario consignado del cliente,
 <break time="200ms"/>
-<say-as interpret-as="spell-out">BOM</say-as>,
+lista de materiales,
 <break time="200ms"/>
-y ruta.
+y ruta de fabricación.
 '@,
 
 # 15 · End
