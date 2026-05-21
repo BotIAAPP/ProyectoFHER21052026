@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquila MTO con material del cliente · SAP S/4HANA · Gilm</title>
+<meta name="description" content="Diagrama de flujo del proceso Make-to-Order (MTO) con material proveído por el cliente (CFM) en SAP S/4HANA. Vista mixta: proceso de negocio + transacciones y movimientos de inventario.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,300..900,0..100;1,9..144,300..900,0..100&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink:    { DEFAULT:'#0E0E10', 80:'#1F2024', 60:'#3A3C44', 40:'#6B6E78', 20:'#9CA3AF' },
+        cream:  { 50:'#FFFCF7', 100:'#FAF4EC', 200:'#F2E8D8', 300:'#E5D6BF' },
+        burnt:  { 300:'#EF9762', 400:'#E07739', 500:'#D85F1B', 600:'#B8430E', 700:'#8F3007' },
+        sage:   { 500:'#4A6B5C', 700:'#2F4639' },
+        slate:  { 500:'#4A5B6B' }
+      },
+      fontFamily: {
+        serif: ['Fraunces','Georgia','serif'],
+        sans:  ['"Plus Jakarta Sans"','system-ui','sans-serif'],
+        mono:  ['"JetBrains Mono"','ui-monospace','monospace']
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+    background-color: #FAF4EC;
+    background-image:
+      radial-gradient(ellipse at 8% 0%, rgba(216,95,27,0.05) 0%, transparent 45%),
+      radial-gradient(ellipse at 100% 100%, rgba(14,14,16,0.05) 0%, transparent 50%);
+    color: #0E0E10;
+    min-height: 100vh;
+  }
+
+  body::before {
+    content:'';
+    position: fixed; inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.5 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/></svg>");
+    mix-blend-mode: multiply;
+    opacity: 0.10;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  body::after {
+    content:'';
+    position: fixed; inset: 0;
+    background-image: linear-gradient(to right, rgba(14,14,16,0.03) 1px, transparent 1px);
+    background-size: calc(100% / 12) 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  header, main, aside, footer { position: relative; z-index: 2; }
+
+  .font-display      { font-family:'Fraunces',Georgia,serif; font-variation-settings:'opsz' 144,'SOFT' 50,'wght' 600; letter-spacing:-0.025em; }
+  .font-display-light{ font-family:'Fraunces',Georgia,serif; font-variation-settings:'opsz' 144,'SOFT' 100,'wght' 300; letter-spacing:-0.02em; }
+  .italic-display    { font-family:'Fraunces',Georgia,serif; font-style:italic; font-variation-settings:'opsz' 144,'SOFT' 100,'wght' 500; }
+
+  .label {
+    font-family:'JetBrains Mono',ui-monospace,monospace;
+    font-size:10.5px; letter-spacing:0.18em;
+    text-transform:uppercase; font-weight:500;
+  }
+  .marker { display:inline-flex; align-items:center; gap:12px; }
+  .marker::before { content:''; width:28px; height:1px; background:currentColor; flex-shrink:0; }
+
+  .chapter-num {
+    font-family:'Fraunces',serif;
+    font-variation-settings:'opsz' 144,'wght' 200,'SOFT' 100;
+    font-feature-settings:'lnum';
+    line-height:0.85;
+    color:transparent;
+    -webkit-text-stroke:1.2px rgba(14,14,16,0.16);
+    user-select:none; pointer-events:none;
+    letter-spacing:-0.06em;
+  }
+
+  /* Flow node */
+  .flow-node {
+    position: relative;
+    background: rgba(255,252,247,0.85);
+    border: 1px solid #0E0E10;
+    padding: 28px 32px;
+    transition: all .25s ease;
+  }
+  .flow-node:hover {
+    transform: translateY(-2px);
+    box-shadow: 8px 8px 0 0 #0E0E10;
+  }
+
+  /* Connector between nodes */
+  .flow-wrap { position: relative; padding-bottom: 56px; }
+  .flow-wrap:last-child { padding-bottom: 0; }
+  .flow-wrap:not(:last-child)::after {
+    content:'';
+    position:absolute;
+    left: 50%;
+    bottom: 8px;
+    width:1px; height:46px;
+    background:#0E0E10;
+    transform: translateX(-0.5px);
+  }
+  .flow-wrap:not(:last-child)::before {
+    content:'';
+    position:absolute;
+    left:50%; bottom:0;
+    width:0; height:0;
+    border-left:7px solid transparent;
+    border-right:7px solid transparent;
+    border-top:9px solid #0E0E10;
+    transform: translateX(-7px);
+    z-index:1;
+  }
+
+  /* Role chips per rol */
+  .role { font-family:'JetBrains Mono',monospace; font-size:9.5px; font-weight:700; letter-spacing:0.18em; text-transform:uppercase; padding:3px 8px; border:1px solid currentColor; }
+  .role-cliente   { color:#3A3C44; background: rgba(58,60,68,0.06); }
+  .role-ventas    { color:#B8430E; background: rgba(184,67,14,0.08); }
+  .role-planeacion{ color:#4A5B6B; background: rgba(74,91,107,0.08); }
+  .role-produccion{ color:#8F3007; background: rgba(143,48,7,0.08); }
+  .role-almacen   { color:#0E0E10; background: rgba(14,14,16,0.06); }
+  .role-finanzas  { color:#2F4639; background: rgba(47,70,57,0.08); }
+
+  /* Tx + mov chips */
+  .chip-tx, .chip-mov, .chip-doc {
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'JetBrains Mono',monospace; font-size:11px;
+    padding:4px 9px; border:1px solid #0E0E10;
+    background:#FFFCF7;
+  }
+  .chip-tx::before  { content:'Tx'; font-size:8px; padding:1px 4px; background:#0E0E10; color:#FAF4EC; }
+  .chip-mov::before { content:'Mov'; font-size:8px; padding:1px 4px; background:#D85F1B; color:#FAF4EC; }
+  .chip-doc::before { content:'Doc'; font-size:8px; padding:1px 4px; background:#4A5B6B; color:#FAF4EC; }
+
+  /* Stage divider */
+  .stage-divider {
+    display:flex; align-items:center; gap:14px;
+    color: rgba(14,14,16,0.5);
+    padding: 32px 0 24px 0;
+  }
+  .stage-divider::before, .stage-divider::after {
+    content:''; flex:1; height:1px; background: currentColor;
+  }
+
+  /* Sidebar legend */
+  .legend-card {
+    border:1px solid #0E0E10;
+    background:rgba(255,252,247,0.95);
+    padding:20px;
+  }
+
+  .rule-tech { display:flex; align-items:center; gap:12px; color:rgba(14,14,16,0.4); }
+  .rule-tech::before, .rule-tech::after { content:''; flex:1; height:1px; background:currentColor; }
+
+  .tnum { font-feature-settings:'tnum' on,'lnum' on; }
+
+  ::selection { background-color:#0E0E10; color:#FAF4EC; }
+
+  /* Reveal animation on scroll */
+  .reveal {
+    opacity: 0; transform: translateY(20px);
+    transition: opacity .7s cubic-bezier(0.16,1,0.3,1), transform .7s cubic-bezier(0.16,1,0.3,1);
+  }
+  .reveal.in { opacity: 1; transform: translateY(0); }
+
+  /* Marquee */
+  .marquee { overflow:hidden; mask-image:linear-gradient(to right, transparent, black 8%, black 92%, transparent); }
+  .marquee-track { display:inline-flex; gap:48px; animation: marquee 60s linear infinite; white-space:nowrap; }
+  @keyframes marquee { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+  /* Print friendly */
+  @media print {
+    body::before, body::after { display:none; }
+    .flow-node { break-inside: avoid; box-shadow: none !important; transform: none !important; }
+    .marquee { display:none; }
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="border-b border-ink/15 bg-cream-100/80 backdrop-blur">
+  <div class="bg-ink text-cream-100 marquee py-1.5">
+    <div class="marquee-track label">
+      <span>SAP S/4HANA · Maquila MTO con material del cliente (CFM)</span>
+      <span class="text-burnt-400">●</span>
+      <span>Diagrama de flujo · Vista mixta</span>
+      <span class="text-burnt-400">●</span>
+      <span>Gilm — Documentación interna</span>
+      <span class="text-burnt-400">●</span>
+      <span>Strategy 20 · Item Cat. KMN/TAN · Stock especial E</span>
+      <span class="text-burnt-400">●</span>
+      <span>SAP S/4HANA · Maquila MTO con material del cliente (CFM)</span>
+      <span class="text-burnt-400">●</span>
+      <span>Diagrama de flujo · Vista mixta</span>
+      <span class="text-burnt-400">●</span>
+      <span>Gilm — Documentación interna</span>
+      <span class="text-burnt-400">●</span>
+      <span>Strategy 20 · Item Cat. KMN/TAN · Stock especial E</span>
+      <span class="text-burnt-400">●</span>
+    </div>
+  </div>
+
+  <div class="max-w-7xl mx-auto px-8 py-6 flex items-baseline justify-between gap-6">
+    <div class="flex items-center gap-4">
+      <svg width="38" height="38" viewBox="0 0 40 40" class="flex-shrink-0">
+        <rect x="1" y="1" width="38" height="38" fill="#0E0E10"/>
+        <path d="M8 14 L20 8 L32 14 L32 26 L20 32 L8 26 Z" fill="none" stroke="#D85F1B" stroke-width="1.5"/>
+        <circle cx="20" cy="20" r="3" fill="#D85F1B"/>
+      </svg>
+      <div>
+        <div class="label text-ink-60">Manual · Procesos</div>
+        <div class="font-display text-lg leading-tight">SAP S/4HANA</div>
+      </div>
+    </div>
+    <div class="text-right">
+      <div class="label text-ink-60">Documento</div>
+      <div class="font-mono text-sm tnum text-ink">MTO-CFM · v.1.0</div>
+    </div>
+  </div>
+</header>
+
+<!-- ============================ HERO ============================ -->
+<section class="max-w-7xl mx-auto px-8 pt-16 lg:pt-24 pb-12 relative">
+  <div class="chapter-num absolute -top-4 -left-2 reveal in" style="font-size: clamp(160px, 22vw, 280px);">§</div>
+
+  <div class="relative grid grid-cols-12 gap-8">
+    <div class="col-span-12 lg:col-span-8">
+      <div class="marker label text-burnt-600 mb-6 reveal in">Make-to-Order · Customer-Furnished Material</div>
+      <h1 class="font-display-light text-5xl lg:text-7xl leading-[1.02] mb-8 reveal in">
+        Maquila con<br>
+        material <span class="italic-display text-burnt-600">del cliente</span>.
+      </h1>
+      <p class="text-lg leading-relaxed text-ink-80 max-w-2xl reveal in">
+        El cliente entrega su material y solicita un producto terminado <em class="italic-display">específico</em>. SAP S/4HANA orquesta el proceso bajo la estrategia <strong>MTO (Make-to-Order)</strong>, asignando el material al pedido de venta como <strong>stock especial E</strong>, sin valor en libros, hasta el embarque y la facturación del servicio.
+      </p>
+    </div>
+    <div class="col-span-12 lg:col-span-4 lg:pl-8 lg:border-l lg:border-ink/15 reveal in">
+      <div class="label text-ink-40 mb-3 marker">Resumen</div>
+      <dl class="text-sm space-y-3">
+        <div class="flex justify-between border-b border-ink/15 pb-2">
+          <dt class="text-ink-60">Pasos del flujo</dt>
+          <dd class="font-mono tnum font-bold">10</dd>
+        </div>
+        <div class="flex justify-between border-b border-ink/15 pb-2">
+          <dt class="text-ink-60">Áreas involucradas</dt>
+          <dd class="font-mono tnum font-bold">6</dd>
+        </div>
+        <div class="flex justify-between border-b border-ink/15 pb-2">
+          <dt class="text-ink-60">Strategy Group</dt>
+          <dd class="font-mono font-bold">20</dd>
+        </div>
+        <div class="flex justify-between border-b border-ink/15 pb-2">
+          <dt class="text-ink-60">Requirement Type</dt>
+          <dd class="font-mono font-bold">KE</dd>
+        </div>
+        <div class="flex justify-between">
+          <dt class="text-ink-60">Stock especial</dt>
+          <dd class="font-mono font-bold">E (Sales Order)</dd>
+        </div>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ MAIN: FLOW + SIDEBAR ============================ -->
+<main class="max-w-7xl mx-auto px-8 pb-16">
+<div class="grid grid-cols-12 gap-10">
+
+<!-- ============== FLOW (left, 8/12) ============== -->
+<div class="col-span-12 lg:col-span-8">
+
+  <div class="stage-divider label reveal"><span>Fase I · Pre-venta y planificación</span></div>
+
+  <!-- ============== STEP 01 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">01</span>
+          <span class="role role-cliente">Cliente · Ventas</span>
+        </div>
+        <span class="label text-ink-40">Inicio</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Solicitud y cotización</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Cliente solicita un producto terminado a fabricar con <em class="italic-display">su</em> material. Ventas elabora cotización indicando: servicio de maquila, insumos propios y condiciones (precio, plazo, lugar de entrega).
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">VA21</span>
+        <span class="chip-doc">QT · Quotation</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 02 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">02</span>
+          <span class="role role-ventas">Ventas</span>
+        </div>
+        <span class="label text-ink-40">Documento ancla</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Pedido de venta MTO</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Se crea el <strong>Pedido de Venta</strong> tipo MTO. Cada posición usa item category <strong>TAN</strong> (estándar) o <strong>KMN</strong> (configurable) con <strong>requirement type KE</strong>. El pedido genera necesidad individual contra <em class="italic-display">sales order stock</em>.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">VA01</span>
+        <span class="chip-doc">OR · Sales Order</span>
+        <span class="chip-doc">Strategy 20</span>
+        <span class="chip-doc">Item Cat. TAN/KMN</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 03 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">03</span>
+          <span class="role role-planeacion">Planeación</span>
+        </div>
+        <span class="label text-ink-40">MRP</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Planificación de necesidades</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Se ejecuta MRP a nivel del pedido. El sistema genera <strong>orden planificada</strong> ligada al SO y crea reservas para los componentes (incluyendo el material que aportará el cliente, parametrizado como CFM).
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">MD02</span>
+        <span class="chip-tx">MD04</span>
+        <span class="chip-doc">Planned Order · individual</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 04 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">04</span>
+          <span class="role role-produccion">Producción</span>
+        </div>
+        <span class="label text-ink-40">Autorización</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Conversión a orden de producción</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Producción convierte la orden planificada en <strong>orden de producción</strong> liberada. La orden queda asociada al SO/posición → todos los costos y movimientos se imputan a la cuenta de objeto del pedido.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">CO40</span>
+        <span class="chip-tx">CO01</span>
+        <span class="chip-doc">PP01 · Production Order</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="stage-divider label reveal"><span>Fase II · Recepción del material del cliente</span></div>
+
+  <!-- ============== STEP 05 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node" style="border-color:#D85F1B; border-width:2px;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-burnt-600 tnum">05</span>
+          <span class="role role-almacen">Almacén</span>
+          <span class="role" style="color:#D85F1B; background:rgba(216,95,27,0.10); border-color:#D85F1B;">Paso clave</span>
+        </div>
+        <span class="label text-ink-40">CFM in</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Recepción del material del cliente</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        El cliente entrega físicamente su material en planta. Almacén lo registra en SAP contra el SO con movimiento <strong>501 E</strong> (recepción sin referencia a OC, stock especial E). El material entra <em class="italic-display">sin valor</em> al inventario — pertenece al cliente y solo se custodia.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">MIGO</span>
+        <span class="chip-mov">501 E · GR sin OC, SOS</span>
+        <span class="chip-doc">Material doc · WE</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="stage-divider label reveal"><span>Fase III · Producción y terminado</span></div>
+
+  <!-- ============== STEP 06 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">06</span>
+          <span class="role role-produccion">Producción</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+        <span class="label text-ink-40">Consumo</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Consumo del CFM en producción</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Al ejecutar operaciones, SAP registra el consumo del material del cliente con movimiento <strong>261 E</strong> (GI a orden de producción contra stock especial E). El backflush puede automatizar este paso si el material está marcado como retro-imputación en la BOM.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">CO11N</span>
+        <span class="chip-tx">MIGO</span>
+        <span class="chip-mov">261 E · GI a orden, SOS</span>
+        <span class="chip-doc">Confirmación operación</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 07 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">07</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+        <span class="label text-ink-40">PT in</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Recepción del PT al stock del pedido</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Producción confirma terminación. El producto terminado se ingresa al <em class="italic-display">sales order stock</em> con movimiento <strong>101 E</strong>. Queda reservado exclusivamente para ese SO — no puede usarse para otro cliente.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">MIGO</span>
+        <span class="chip-mov">101 E · GR de orden, SOS</span>
+        <span class="chip-doc">Material doc · WE</span>
+      </div>
+    </article>
+  </div>
+
+  <div class="stage-divider label reveal"><span>Fase IV · Entrega y facturación</span></div>
+
+  <!-- ============== STEP 08 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">08</span>
+          <span class="role role-ventas">Ventas</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+        <span class="label text-ink-40">Logística outbound</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Creación de la entrega</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Se genera la <strong>entrega outbound</strong> referenciando el SO. SAP propone la cantidad disponible en SOS. Se ejecuta picking (HU si aplica) y se confirma la transferencia hacia muelle de embarque.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">VL01N</span>
+        <span class="chip-doc">LF · Outbound Delivery</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 09 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">09</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+        <span class="label text-ink-40">PT out</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Salida de mercancía (PGI)</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Al embarcar, se posta el <strong>Goods Issue</strong> con movimiento <strong>601 E</strong>. Esto descuenta el PT del sales order stock y dispara el reconocimiento de costo en CO-PA.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">VL02N</span>
+        <span class="chip-mov">601 E · GI delivery, SOS</span>
+        <span class="chip-doc">Material doc · WL</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== STEP 10 ============== -->
+  <div class="flow-wrap reveal">
+    <article class="flow-node">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink tnum">10</span>
+          <span class="role role-finanzas">Finanzas · Ventas</span>
+        </div>
+        <span class="label text-ink-40">Cierre · CFDI</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2">Facturación del servicio</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Se genera la <strong>factura F2</strong> contra la entrega. <strong>Solo se factura el servicio de maquila + insumos propios</strong> — el material del cliente nunca entra al importe. CFDI se timbra ante SAT y se libera la cuenta del SO.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">VF01</span>
+        <span class="chip-doc">F2 · Invoice</span>
+        <span class="chip-doc">CFDI · UUID SAT</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- ============== OPTIONAL: Devolución ============== -->
+  <div class="mt-16 reveal">
+    <div class="rule-tech label mb-6"><span>Opcional</span></div>
+    <article class="flow-node" style="border-style:dashed; background:transparent;">
+      <div class="flex items-start justify-between gap-4 mb-3">
+        <div class="flex items-center gap-3">
+          <span class="font-mono text-3xl font-bold text-ink-40 tnum">+</span>
+          <span class="role role-almacen">Almacén</span>
+          <span class="role role-cliente">Cliente</span>
+        </div>
+        <span class="label text-ink-40">Si hay sobrante</span>
+      </div>
+      <h3 class="font-display text-2xl mb-2 text-ink-80">Devolución del material sobrante</h3>
+      <p class="text-sm text-ink-80 leading-relaxed mb-4">
+        Si quedó CFM sin consumir, se devuelve al cliente con movimiento <strong>502 E</strong> (reversa del 501 E). Puede acompañarse de remisión interna o nota de cargo cero.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="chip-tx">MIGO</span>
+        <span class="chip-mov">502 E · Reversa GR sin OC</span>
+      </div>
+    </article>
+  </div>
+
+</div>
+
+<!-- ============== SIDEBAR (right, 4/12) ============== -->
+<aside class="col-span-12 lg:col-span-4 lg:sticky lg:top-8 lg:self-start space-y-6">
+
+  <div class="legend-card reveal">
+    <div class="label text-burnt-600 mb-4 marker">Leyenda · Roles</div>
+    <ul class="space-y-3 text-sm">
+      <li class="flex items-center gap-3"><span class="role role-cliente">Cliente</span><span class="text-ink-80">Aporta material, recibe PT</span></li>
+      <li class="flex items-center gap-3"><span class="role role-ventas">Ventas</span><span class="text-ink-80">Pedido, entrega, factura</span></li>
+      <li class="flex items-center gap-3"><span class="role role-planeacion">Planeación</span><span class="text-ink-80">MRP, órdenes planificadas</span></li>
+      <li class="flex items-center gap-3"><span class="role role-produccion">Producción</span><span class="text-ink-80">Ejecución de orden PP</span></li>
+      <li class="flex items-center gap-3"><span class="role role-almacen">Almacén</span><span class="text-ink-80">Movimientos de inventario</span></li>
+      <li class="flex items-center gap-3"><span class="role role-finanzas">Finanzas</span><span class="text-ink-80">Facturación, CFDI</span></li>
+    </ul>
+  </div>
+
+  <div class="legend-card reveal">
+    <div class="label text-burnt-600 mb-4 marker">Movimientos clave</div>
+    <table class="w-full text-sm">
+      <tbody>
+        <tr class="border-b border-ink/15">
+          <td class="py-2 pr-3 font-mono font-bold text-burnt-600 tnum">501 E</td>
+          <td class="py-2 text-ink-80">GR material del cliente al SOS · sin valor</td>
+        </tr>
+        <tr class="border-b border-ink/15">
+          <td class="py-2 pr-3 font-mono font-bold text-burnt-600 tnum">261 E</td>
+          <td class="py-2 text-ink-80">GI a orden de producción (consumo CFM)</td>
+        </tr>
+        <tr class="border-b border-ink/15">
+          <td class="py-2 pr-3 font-mono font-bold text-burnt-600 tnum">101 E</td>
+          <td class="py-2 text-ink-80">GR de PT terminado al SOS</td>
+        </tr>
+        <tr class="border-b border-ink/15">
+          <td class="py-2 pr-3 font-mono font-bold text-burnt-600 tnum">601 E</td>
+          <td class="py-2 text-ink-80">GI de entrega al cliente</td>
+        </tr>
+        <tr>
+          <td class="py-2 pr-3 font-mono font-bold text-ink-60 tnum">502 E</td>
+          <td class="py-2 text-ink-80">Reversa 501 · devolución de sobrante</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="legend-card reveal">
+    <div class="label text-burnt-600 mb-4 marker">Transacciones</div>
+    <div class="grid grid-cols-2 gap-y-2 gap-x-3 text-sm">
+      <span class="font-mono font-bold">VA21</span><span class="text-ink-80">Cotización</span>
+      <span class="font-mono font-bold">VA01</span><span class="text-ink-80">Pedido venta</span>
+      <span class="font-mono font-bold">MD02</span><span class="text-ink-80">MRP single-item</span>
+      <span class="font-mono font-bold">MD04</span><span class="text-ink-80">Stock/req. list</span>
+      <span class="font-mono font-bold">CO40</span><span class="text-ink-80">Convertir planned</span>
+      <span class="font-mono font-bold">CO01</span><span class="text-ink-80">Crear orden PP</span>
+      <span class="font-mono font-bold">CO11N</span><span class="text-ink-80">Confirmar oper.</span>
+      <span class="font-mono font-bold">MIGO</span><span class="text-ink-80">Movs. inventario</span>
+      <span class="font-mono font-bold">VL01N</span><span class="text-ink-80">Crear entrega</span>
+      <span class="font-mono font-bold">VL02N</span><span class="text-ink-80">PGI</span>
+      <span class="font-mono font-bold">VF01</span><span class="text-ink-80">Facturar</span>
+    </div>
+  </div>
+
+  <div class="legend-card reveal" style="background:#0E0E10; color:#FAF4EC; border-color:#0E0E10;">
+    <div class="label text-burnt-400 mb-3 marker">Notas críticas</div>
+    <ul class="space-y-2.5 text-sm leading-relaxed">
+      <li class="flex gap-2"><span class="text-burnt-400 font-bold flex-shrink-0">•</span><span>El CFM <strong>nunca</strong> entra al valor del inventario propio. Stock especial E lo aísla contablemente.</span></li>
+      <li class="flex gap-2"><span class="text-burnt-400 font-bold flex-shrink-0">•</span><span>Toda la trazabilidad cuelga del <strong>Sales Order + posición</strong>. Sin él, no hay imputación.</span></li>
+      <li class="flex gap-2"><span class="text-burnt-400 font-bold flex-shrink-0">•</span><span>La factura jamás incluye importe por el material del cliente — solo servicio + materiales propios.</span></li>
+      <li class="flex gap-2"><span class="text-burnt-400 font-bold flex-shrink-0">•</span><span>Sobrantes deben devolverse con <strong>502 E</strong> antes del cierre del SO.</span></li>
+    </ul>
+  </div>
+
+</aside>
+
+</div>
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="border-t border-ink/20 bg-cream-100/80 backdrop-blur mt-12">
+  <div class="max-w-7xl mx-auto px-8 py-8">
+    <div class="grid md:grid-cols-3 gap-6 items-baseline">
+      <div>
+        <div class="label text-ink-40 mb-2 marker">Referencias</div>
+        <p class="text-xs text-ink-80 leading-relaxed">SAP S/4HANA · Make-to-Order, Subcontracting components, Sales Order Stock (special stock indicator E), Production Order PP01. Documentación oficial: help.sap.com.</p>
+      </div>
+      <div>
+        <div class="label text-ink-40 mb-2 marker">Versión</div>
+        <p class="text-xs text-ink-80 font-mono">MTO-CFM · v.1.0 · 2026-05</p>
+      </div>
+      <div class="text-right">
+        <div class="label text-ink-40 mb-2 marker justify-end">Manual</div>
+        <p class="font-display text-lg">Procesos · Gilm</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+const io = new IntersectionObserver((entries) => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+}, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>
