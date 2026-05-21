@@ -988,6 +988,17 @@
     setTimeout(() => navHelp.classList.remove('show'), 4500);
   }, 800);
 
+  // Allow direct navigation via URL hash (#3, #7, etc.)
+  function applyHash() {
+    const h = parseInt(location.hash.replace('#', ''), 10);
+    if (!isNaN(h) && h >= 1 && h <= total) {
+      idx = h - 1;
+      render();
+    }
+  }
+  window.addEventListener('hashchange', applyHash);
+  applyHash();
+
   render();
 })();
 </script>

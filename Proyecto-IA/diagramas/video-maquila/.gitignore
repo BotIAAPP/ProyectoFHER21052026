@@ -1,0 +1,6 @@
+# Intermediate build artifacts (regenerable from build-video.ps1)
+audio/
+frames/
+segments/
+ff-*.log
+ff-*.log.out
