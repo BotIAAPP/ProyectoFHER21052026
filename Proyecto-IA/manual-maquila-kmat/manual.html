@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Manual de Usuario · Maquila MTO con Materiales Configurables · SAP S/4HANA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ocean:#1F3A5F; --ocean-dark:#142640; --ocean-soft:#E8EEF6;
+    --accent:#D85F1B; --accent-soft:#FFF0EC;
+    --green:#4A8B68; --green-soft:#F0F7F2;
+    --ink:#0E0E10; --ink-soft:#4A4D55; --ink-muted:#8C8F96; --line:#DCDFE3;
+    /* SAP GUI palette (recreación ilustrativa) */
+    --sap-title:#0a6ed1; --sap-title2:#085caf;
+    --sap-bar:#edeff0; --sap-bar-border:#c4c9ce;
+    --sap-field-border:#89919a; --sap-req:#cc3333;
+    --sap-body:#f7f8f9; --sap-status:#dfe3e6;
+  }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  html { -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  body { font-family:'Plus Jakarta Sans',system-ui,sans-serif; color:var(--ink); font-size:13px; line-height:1.5; }
+  .mono { font-family:'JetBrains Mono',ui-monospace,monospace; }
+
+  /* ---- Page setup ---- */
+  @page { size:A4; margin:16mm 14mm 18mm 14mm; }
+  .page { page-break-after:always; position:relative; min-height:255mm; padding-bottom:10mm; }
+  .page:last-child { page-break-after:auto; }
+
+  /* ---- Cover ---- */
+  .cover { background:var(--ocean); color:white; min-height:265mm; display:flex; flex-direction:column;
+           justify-content:center; padding:30mm 20mm; margin:-16mm -14mm 0 -14mm; }
+  .cover .logo-mark { width:78mm; color:white; margin-bottom:18mm; }
+  .cover h1 { font-size:34px; font-weight:800; letter-spacing:-0.02em; line-height:1.12; margin-bottom:8mm; }
+  .cover .subtitle { font-size:18px; font-weight:400; opacity:0.9; margin-bottom:20mm; }
+  .cover .meta { font-size:12px; opacity:0.8; line-height:1.9; border-top:1px solid rgba(255,255,255,0.25); padding-top:8mm; }
+  .cover .meta .mono { font-size:11px; letter-spacing:0.08em; }
+
+  /* ---- Headings ---- */
+  h2.sec { font-size:24px; font-weight:800; color:var(--ocean); letter-spacing:-0.02em;
+           border-bottom:3px solid var(--ocean); padding-bottom:6px; margin-bottom:16px; margin-top:4px; }
+  h3 { font-size:17px; font-weight:700; color:var(--ocean); margin:18px 0 8px; }
+  p { margin-bottom:9px; color:var(--ink-soft); }
+  p strong { color:var(--ink); }
+  ul, ol { margin:8px 0 12px 22px; }
+  li { margin-bottom:6px; color:var(--ink-soft); }
+  li::marker { color:var(--accent); }
+
+  /* ---- Running header ---- */
+  .runhead { display:flex; justify-content:space-between; align-items:center; font-size:9px;
+             color:var(--ink-muted); text-transform:uppercase; letter-spacing:0.12em;
+             border-bottom:1px solid var(--line); padding-bottom:4px; margin-bottom:14px; }
+  .runhead .logo-mark { width:22mm; color:var(--ocean); }
+
+  /* ---- Transaction header chip ---- */
+  .tx-head { display:flex; align-items:center; gap:14px; margin-bottom:6px; }
+  .tx-code { font-family:'JetBrains Mono',monospace; font-size:20px; font-weight:700;
+             background:var(--ocean); color:white; padding:6px 16px; border-radius:5px; letter-spacing:0.04em; }
+  .tx-name { font-size:18px; font-weight:700; color:var(--ink); }
+  .tx-phase { font-family:'JetBrains Mono',monospace; font-size:10px; text-transform:uppercase;
+              letter-spacing:0.15em; color:var(--accent); font-weight:600; margin-bottom:14px; }
+
+  /* ========== SAP GUI MOCKUP (recreación ilustrativa) ========== */
+  .sap { border:1px solid var(--sap-bar-border); border-radius:3px; overflow:hidden;
+         font-size:11px; box-shadow:0 2px 6px rgba(0,0,0,0.10); margin:12px 0 16px; background:white; }
+  .sap-title { background:linear-gradient(180deg,var(--sap-title),var(--sap-title2)); color:white;
+               padding:5px 10px; font-weight:600; font-size:11.5px; display:flex; justify-content:space-between; align-items:center; }
+  .sap-title .win-btns { display:flex; gap:5px; }
+  .sap-title .win-btns span { width:11px; height:11px; border-radius:2px; background:rgba(255,255,255,0.35); display:inline-block; }
+  .sap-menu { background:var(--sap-bar); border-bottom:1px solid var(--sap-bar-border);
+              padding:3px 8px; display:flex; gap:14px; font-size:10.5px; color:#33373b; }
+  .sap-toolbar { background:var(--sap-bar); border-bottom:1px solid var(--sap-bar-border);
+                 padding:4px 8px; display:flex; align-items:center; gap:6px; }
+  .sap-icon { width:18px; height:18px; border:1px solid var(--sap-bar-border); border-radius:3px;
+              background:white; display:inline-flex; align-items:center; justify-content:center; font-size:10px; color:#0a6ed1; }
+  .sap-icon.go { color:#107e3e; font-weight:700; }
+  .sap-cmd { display:flex; align-items:center; gap:0; margin-left:4px; }
+  .sap-cmd .lbl { font-size:10px; color:#5a6066; margin-right:4px; }
+  .sap-cmd input { width:90px; border:1px solid var(--sap-field-border); padding:2px 5px;
+                   font-family:'JetBrains Mono',monospace; font-size:10.5px; background:#fffde7; }
+  .sap-body { background:var(--sap-body); padding:14px 16px; }
+  .sap-tabs { display:flex; gap:2px; margin-bottom:12px; border-bottom:1px solid var(--sap-bar-border); }
+  .sap-tab { padding:4px 12px; font-size:10.5px; background:var(--sap-bar); border:1px solid var(--sap-bar-border);
+             border-bottom:none; border-radius:3px 3px 0 0; color:#5a6066; }
+  .sap-tab.active { background:white; color:var(--ocean); font-weight:700; position:relative; top:1px; }
+  .sap-grid { display:grid; grid-template-columns:auto 1fr auto 1fr; gap:7px 12px; align-items:center; }
+  .sap-grid .lab { font-size:10.5px; color:#33373b; text-align:right; }
+  .sap-grid .lab.req::before { content:'\2731'; color:var(--sap-req); font-size:8px; margin-right:3px; vertical-align:middle; }
+  .sap-fld { border:1px solid var(--sap-field-border); background:white; padding:2px 6px; font-size:10.5px;
+             font-family:'JetBrains Mono',monospace; min-height:18px; }
+  .sap-fld.fill { background:#eef6ff; }
+  .sap-fld.wide { grid-column:span 3; }
+  .sap-section-title { font-size:10.5px; font-weight:700; color:var(--ocean); margin:14px 0 6px;
+                       border-bottom:1px dotted var(--sap-bar-border); padding-bottom:3px; }
+  .sap-status { background:var(--sap-status); border-top:1px solid var(--sap-bar-border);
+                padding:3px 10px; font-size:10px; color:#33373b; display:flex; align-items:center; gap:6px; }
+  .sap-status .dot { width:9px; height:9px; border-radius:50%; background:#107e3e; display:inline-block; }
+  .sap-popup { border:2px solid var(--sap-title); border-radius:3px; margin:10px 24px; background:white; box-shadow:0 4px 12px rgba(0,0,0,0.18); }
+  .sap-popup .pop-title { background:var(--sap-title); color:white; padding:4px 10px; font-size:11px; font-weight:600; }
+  .sap-popup .pop-body { padding:12px 14px; }
+
+  /* tables */
+  table.grid { width:100%; border-collapse:collapse; font-size:10.5px; margin:6px 0; }
+  table.grid th { background:var(--ocean); color:white; padding:5px 8px; text-align:left; font-weight:600; }
+  table.grid td { border:1px solid var(--line); padding:5px 8px; color:var(--ink-soft); vertical-align:top; }
+  table.grid tr:nth-child(even) td { background:#f7f9fb; }
+  table.grid td .mono { color:var(--ocean); font-weight:600; }
+
+  /* steps */
+  ol.steps { counter-reset:step; list-style:none; margin-left:0; }
+  ol.steps li { counter-increment:step; padding-left:32px; position:relative; margin-bottom:8px; }
+  ol.steps li::before { content:counter(step); position:absolute; left:0; top:0; width:22px; height:22px;
+                        background:var(--ocean); color:white; border-radius:50%; font-size:11px; font-weight:700;
+                        display:flex; align-items:center; justify-content:center; }
+
+  /* callouts */
+  .note { padding:10px 14px; border-radius:6px; border-left:3px solid; margin:10px 0; font-size:12px; }
+  .note.tip { background:var(--green-soft); border-color:var(--green); color:#2D4D38; }
+  .note.warn { background:var(--accent-soft); border-color:var(--accent); color:#6B2E0A; }
+  .note.info { background:var(--ocean-soft); border-color:var(--ocean); color:var(--ink); }
+  .note strong { font-weight:700; }
+
+  /* TOC */
+  .toc-item { display:flex; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px dotted var(--line); }
+  .toc-item .tcode { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--ocean);
+                     background:var(--ocean-soft); padding:2px 8px; border-radius:3px; font-size:11px; min-width:62px; text-align:center; }
+  .toc-item .ttitle { flex:1; color:var(--ink); font-weight:500; }
+  .toc-item .tpage { color:var(--ink-muted); font-size:11px; }
+  .toc-phase { font-size:11px; font-weight:700; color:var(--accent); text-transform:uppercase;
+               letter-spacing:0.1em; margin:16px 0 4px; }
+</style>
+</head>
+<body>
+
+<!-- ============ LOGO SYMBOL ============ -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="aliacer-logo" viewBox="0 0 1307 268">
+    <g><path fill="currentColor" d="M423.63 64.66a2.807 2.807 0 0 0-2.68-1.95h-32.23c-.86 0-1.68.4-2.21 1.08l-92.64 118.68c-1.44 1.84-.13 4.54 2.21 4.54h26.36c.87 0 1.69-.4 2.22-1.09l17.87-23.02c.53-.69 1.35-1.09 2.22-1.09h75.13c1.22 0 2.31.79 2.68 1.96l6.72 21.27a2.803 2.803 0 0 0 2.68 1.96h26.86c1.9 0 3.25-1.85 2.68-3.66L423.65 64.66h-.02Zm-12.22 75.29h-45.64c-2.34 0-3.65-2.69-2.21-4.54l32.62-41.79c1.39-1.79 4.22-1.27 4.89.89l13.02 41.79c.56 1.81-.79 3.64-2.68 3.64v.01Zm189.67 22.7h-85.66c-1.81 0-3.15-1.69-2.74-3.45l21.56-92.21c.41-1.76-.93-3.45-2.74-3.45h-26.08c-1.31 0-2.44.9-2.74 2.18l-27.13 117.85c-.41 1.76.93 3.44 2.74 3.44h118.74c1.32 0 2.47-.92 2.75-2.22l4.04-18.74c.38-1.75-.96-3.4-2.75-3.4h.01Zm69.4-99.11h-26.9c-1.13 0-2.1.78-2.36 1.87l-27.3 118.63c-.35 1.51.8 2.96 2.36 2.96h26.9c1.13 0 2.1-.78 2.36-1.87L672.85 66.5c.35-1.51-.8-2.96-2.36-2.96h-.01Zm121.09.97a2.587 2.587 0 0 0-2.47-1.81h-32.5c-.8 0-1.55.37-2.04 1l-92.98 119.11c-1.33 1.7-.12 4.19 2.04 4.19h26.9c.8 0 1.56-.37 2.05-1l17.99-23.19c.49-.63 1.25-1 2.05-1H788c1.13 0 2.13.73 2.47 1.81l6.82 21.57a2.587 2.587 0 0 0 2.47 1.81h27.31c1.76 0 3-1.71 2.47-3.38L791.56 64.51h.01Zm-11.88 75.44h-46.37c-2.16 0-3.37-2.49-2.04-4.19l33.14-42.46c1.29-1.65 3.9-1.17 4.52.82l13.23 42.46c.52 1.67-.73 3.36-2.48 3.36v.01Zm210.57 12.09-23.75-10.17c-1.02-.44-2.18-.08-2.82.83-10.46 14.82-27.91 22.61-49.07 22.61-37.29 0-50.86-21.02-45.25-44.88 5.79-24.36 27.33-34.54 52.49-34.54 28.59 0 41.59 9.02 47.89 21.21.49.96 1.54 1.49 2.59 1.25l27.44-6.04c1.39-.3 2.23-1.78 1.7-3.1-8.28-20.61-32.89-38.02-76.73-38.02-40.36 0-77.47 13.51-87.25 56.06-10.13 44.21 20.46 72.08 75.12 72.08 35.22 0 63.15-10.63 78.69-33.86.81-1.21.28-2.86-1.05-3.44v.01Zm139.13 10.6h-92.44c-1.55 0-2.69-1.46-2.32-2.96l5.51-22.09a2.388 2.388 0 0 1 2.32-1.81h74.6c1.12 0 2.09-.78 2.33-1.87l4.19-18.92c.33-1.49-.8-2.9-2.33-2.9h-72.38c-1.54 0-2.68-1.44-2.32-2.94l4.47-18.75a2.395 2.395 0 0 1 2.32-1.83h91.76c1.12 0 2.09-.78 2.33-1.88l4.39-20.25c.32-1.49-.81-2.89-2.33-2.89H1027.1c-1.11 0-2.08.77-2.33 1.85l-27.32 118.69c-.34 1.5.79 2.92 2.33 2.92h125.24c1.12 0 2.09-.78 2.33-1.87l4.36-19.58a2.39 2.39 0 0 0-2.33-2.91l.01-.01Zm122.81-99.1h-79.09c-1.28 0-2.39.88-2.67 2.13l-27.16 117.98c-.4 1.72.91 3.36 2.67 3.36h25.87c1.28 0 2.39-.88 2.67-2.13l9.33-40.46c.29-1.24 1.4-2.13 2.67-2.13h50.41c1.14 0 2.16.7 2.56 1.77l15.67 41.18a2.74 2.74 0 0 0 2.56 1.77h26.17c1.92 0 3.25-1.92 2.56-3.72l-15.92-41.86c-.58-1.53.28-3.25 1.87-3.63 16.76-4.02 29.1-12.92 33.38-31.04 6.34-28.53-14.12-43.21-53.58-43.21l.03-.01Zm22.45 42.21c-2.72 11.01-11.22 13.35-24.08 13.35h-57.55c-1.77 0-3.07-1.64-2.67-3.36l5.97-25.71c.29-1.24 1.4-2.12 2.67-2.12h51.58c19.55 0 26.43 6.84 24.08 17.85v-.01Z"/>
+    <path fill="currentColor" d="M267.42 133.71C267.42 59.87 207.56 0 133.71 0 59.87 0 0 59.86 0 133.71c0 73.84 59.86 133.71 133.71 133.71 33.85 0 64.75-12.61 88.3-33.35l-.02-.02c.8-1.07 1.3-2.38 1.3-3.82 0-3.52-2.86-6.38-6.38-6.38-1.43 0-2.57.46-3.82 1.27-18.81 11.02-41.27 17.45-65.41 17.45-15.1 0-29.53-2.53-42.84-7.1h.02c-44.38-12.57-76.92-53.35-76.92-101.75 0-58.41 47.35-105.76 105.76-105.76 58.41 0 105.76 47.35 105.76 105.76 0 7.68-.84 15.17-2.41 22.38l-.06.02c-.4 1.7-1.85 2.99-3.68 2.99-1.11 0-2.09-.48-2.79-1.23h-.01l-78.64-78.64c-.36-.47-.7-.96-1.14-1.39-2.76-2.76-6.39-4.11-10.01-4.08-3.62-.03-7.25 1.32-10.01 4.08-.43.43-.77.92-1.14 1.39L51.6 157.21c-5.46 5.46-5.46 14.3 0 19.76 5.46 5.46 14.3 5.46 19.76 0l66.68-66.68a3.69 3.69 0 0 1 2.67-1.12c1.04 0 2.01.45 2.68 1.14l67.97 67.97.13.05c5.68 5.37 13.33 8.69 21.77 8.69 14.95 0 27.46-10.36 30.81-24.28l.1-.08c2.07-9.32 3.21-18.99 3.21-28.94l.04-.01Z"/></g>
+  </symbol>
+</svg>
+
+<!-- ============ COVER ============ -->
+<section class="page" style="page-break-after:always;">
+  <div class="cover">
+    <svg class="logo-mark"><use href="#aliacer-logo"/></svg>
+    <h1>Manual de Usuario<br>Maquila al cliente · Make-to-Order<br>con materiales configurables</h1>
+    <div class="subtitle">SAP S/4HANA · Guía de transacciones paso a paso</div>
+    <div class="meta">
+      <div class="mono">DOCUMENTO: manual-maquila-kmat.pdf</div>
+      <div class="mono">VERSIÓN: 1.0 · 2026-05-21</div>
+      <div class="mono">ÁMBITO: Variant Configuration (LO-VC) · MTO</div>
+      <div style="margin-top:10px; font-size:10px; opacity:0.6;">
+        Las pantallas de SAP en este manual son recreaciones ilustrativas con fines de capacitación.
+        La disposición real de campos puede variar según la versión y personalización del sistema.
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOC ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Manual · Maquila MTO/KMAT</span></div>
+  <h2 class="sec">Índice de transacciones</h2>
+  <p>El flujo completo, de la captura del pedido a la facturación, usando las transacciones estándar de SAP S/4HANA.</p>
+
+  <div class="toc-phase">Fase 1 · Venta</div>
+  <div class="toc-item"><span class="tcode">VA01</span><span class="ttitle">Crear pedido de venta con material configurable</span><span class="tpage">pág. 4</span></div>
+  <div class="toc-item"><span class="tcode">CU50</span><span class="ttitle">Simular configuración (cotización)</span><span class="tpage">pág. 5</span></div>
+
+  <div class="toc-phase">Fase 2 · Planeación</div>
+  <div class="toc-item"><span class="tcode">MD50</span><span class="ttitle">Planificación individual de orden de venta (MRP)</span><span class="tpage">pág. 6</span></div>
+
+  <div class="toc-phase">Fase 3 · Producción</div>
+  <div class="toc-item"><span class="tcode">CO40</span><span class="ttitle">Convertir orden planificada en orden de producción</span><span class="tpage">pág. 7</span></div>
+  <div class="toc-item"><span class="tcode">CO02</span><span class="ttitle">Liberar la orden de producción</span><span class="tpage">pág. 8</span></div>
+  <div class="toc-item"><span class="tcode">CO11N</span><span class="ttitle">Confirmar operación de producción</span><span class="tpage">pág. 9</span></div>
+
+  <div class="toc-phase">Fase 4 · Inventario</div>
+  <div class="toc-item"><span class="tcode">MIGO</span><span class="ttitle">Movimientos de mercancías (101 / 261 / 501)</span><span class="tpage">pág. 10</span></div>
+  <div class="toc-item"><span class="tcode">MMBE</span><span class="ttitle">Resumen de stocks por pedido</span><span class="tpage">pág. 11</span></div>
+
+  <div class="toc-phase">Fase 5 · Entrega</div>
+  <div class="toc-item"><span class="tcode">VL01N</span><span class="ttitle">Crear entrega de salida</span><span class="tpage">pág. 12</span></div>
+
+  <div class="toc-phase">Fase 6 · Facturación</div>
+  <div class="toc-item"><span class="tcode">VF01</span><span class="ttitle">Crear factura</span><span class="tpage">pág. 13</span></div>
+
+  <div class="note info" style="margin-top:24px;">
+    <strong>Cómo llamar una transacción:</strong> en el campo de comandos (arriba a la izquierda)
+    escribe el código precedido de <span class="mono">/n</span> para abrir en sesión nueva
+    (ej. <span class="mono">/nVA01</span>) o <span class="mono">/o</span> para abrir en una ventana adicional
+    (ej. <span class="mono">/oMMBE</span>).
+  </div>
+</section>
+
+<!-- ============ INTRO ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Manual · Maquila MTO/KMAT</span></div>
+  <h2 class="sec">Introducción</h2>
+  <p><strong>Make-to-Order (MTO)</strong> significa fabricar contra pedido: la producción se dispara cuando
+  el cliente coloca su orden, no antes. Con <strong>materiales configurables</strong> el cliente elige
+  variantes (calibre, ancho, recubrimiento, acabado, color) de un menú de opciones, y SAP genera
+  automáticamente la lista de materiales y la ruta de fabricación correctas.</p>
+
+  <h3>Concepto clave: segregación de inventario</h3>
+  <p>Todo el material asociado a un pedido configurado queda <strong>apartado</strong> para ese pedido.
+  No se puede vender, transferir ni asignar a otro cliente. Según quién provee la materia prima:</p>
+  <table class="grid">
+    <tr><th>Escenario</th><th>Materia prima</th><th>Tipo de stock</th><th>Facturación</th></tr>
+    <tr><td><strong>Estándar</strong></td><td>La pone Aliacer</td><td class="mono">E (pedido de venta)</td><td>Material + servicio</td></tr>
+    <tr><td><strong>Material del cliente</strong></td><td>La envía el cliente</td><td class="mono">O (consignado cliente)</td><td>Solo servicio de maquila</td></tr>
+  </table>
+
+  <h3>Flujo general</h3>
+  <ol class="steps">
+    <li>El cliente pide una variante específica → <span class="mono">VA01</span></li>
+    <li>Se configuran las opciones y se confirma el pedido</li>
+    <li>Planeación reserva/recibe materia prima → <span class="mono">MD50</span> / <span class="mono">MIGO</span></li>
+    <li>Se crea y libera la orden de producción → <span class="mono">CO40</span>, <span class="mono">CO02</span></li>
+    <li>Producción fabrica y confirma → <span class="mono">CO11N</span>, <span class="mono">MIGO 261</span></li>
+    <li>Entra producto terminado al stock apartado → <span class="mono">MIGO 101</span></li>
+    <li>Se entrega y factura → <span class="mono">VL01N</span>, <span class="mono">VF01</span></li>
+  </ol>
+</section>
+
+<!-- ============ VA01 ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 1 · Venta</span></div>
+  <div class="tx-head"><span class="tx-code">VA01</span><span class="tx-name">Crear pedido de venta</span></div>
+  <div class="tx-phase">Fase 1 · Venta · captura de configuración</div>
+  <p>Captura el pedido del cliente. Al ingresar un material configurable, SAP abre la pantalla de
+  configuración donde se eligen las opciones (características).</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Crear pedido de venta: Resumen</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Pedido</span><span>Tratar</span><span>Pasar a</span><span>Detalles</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><span class="lbl"></span><input class="mono" value="/nVA01" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span><span class="sap-icon">&#128269;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Clase de pedido</span><span class="sap-fld fill">OR &nbsp;Pedido estándar</span>
+        <span class="lab">Organización ventas</span><span class="sap-fld fill">1000</span>
+        <span class="lab">Canal distribución</span><span class="sap-fld fill">10</span>
+        <span class="lab">Sector</span><span class="sap-fld fill">00</span>
+      </div>
+      <div class="sap-section-title">Datos del pedido</div>
+      <div class="sap-grid">
+        <span class="lab req">Solicitante</span><span class="sap-fld fill">100245 &nbsp;Cliente ACME S.A.</span>
+        <span class="lab">Pedido cliente</span><span class="sap-fld">OC-2026-0489</span>
+        <span class="lab">Destinatario</span><span class="sap-fld fill">100245</span>
+        <span class="lab">Fecha entrega</span><span class="sap-fld">15.06.2026</span>
+      </div>
+      <div class="sap-section-title">Posiciones</div>
+      <table class="grid">
+        <tr><th>Pos.</th><th>Material</th><th>Descripción</th><th>Cantidad</th><th>UM</th><th>TpPos</th></tr>
+        <tr><td>10</td><td class="mono">KMAT-LAM-001</td><td>Lámina galvanizada configurable</td><td>50,000</td><td>KG</td><td class="mono">TAC</td></tr>
+      </table>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Listo para configurar la posición 10</div>
+  </div>
+
+  <div class="note info"><strong>Configuración:</strong> al confirmar la posición con material tipo
+  <span class="mono">KMAT</span>, se abre automáticamente la pantalla de características. La categoría
+  de posición <span class="mono">TAC</span> indica material configurable con make-to-order.</div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica clase de pedido <span class="mono">OR</span> y los datos de organización.</li>
+    <li>Captura el solicitante (cliente) y la fecha de entrega solicitada.</li>
+    <li>En posiciones, teclea el material configurable <span class="mono">KMAT</span> y la cantidad.</li>
+    <li>Al dar Enter se abre la pantalla de configuración: marca calibre, ancho, recubrimiento, acabado, color.</li>
+    <li>Guarda con <span class="mono">Ctrl+S</span>. Anota el número de pedido generado.</li>
+  </ol>
+
+  <h3>Campos clave</h3>
+  <table class="grid">
+    <tr><th>Campo</th><th>Descripción</th></tr>
+    <tr><td class="mono">Clase de pedido</td><td>Tipo de documento de ventas (OR = estándar).</td></tr>
+    <tr><td class="mono">Solicitante</td><td>Cliente que coloca el pedido.</td></tr>
+    <tr><td class="mono">Material (KMAT)</td><td>Material configurable; dispara la pantalla de variantes.</td></tr>
+    <tr><td class="mono">TpPos (TAC)</td><td>Categoría de posición: configurable + MTO.</td></tr>
+  </table>
+</section>
+
+<!-- ============ CU50 ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 1 · Venta</span></div>
+  <div class="tx-head"><span class="tx-code">CU50</span><span class="tx-name">Simular configuración</span></div>
+  <div class="tx-phase">Fase 1 · Venta · cotización previa</div>
+  <p>Permite armar y validar una configuración <strong>sin crear el pedido</strong>, útil para cotizar
+  rápido o verificar que la combinación de opciones es válida.</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Modelado de configuración: Simulación</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Configuración</span><span>Tratar</span><span>Pasar a</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nCU50" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Material</span><span class="sap-fld fill">KMAT-LAM-001</span>
+        <span class="lab">Perfil config.</span><span class="sap-fld fill">PRF_LAMINA</span>
+      </div>
+      <div class="sap-section-title">Características (Variant Configuration)</div>
+      <table class="grid">
+        <tr><th>Característica</th><th>Valor elegido</th><th>Estado</th></tr>
+        <tr><td>CALIBRE</td><td class="mono">C26</td><td>OK</td></tr>
+        <tr><td>ANCHO_PULG</td><td class="mono">48"</td><td>OK</td></tr>
+        <tr><td>RECUBRIMIENTO</td><td class="mono">AZ50 (galvalume)</td><td>OK</td></tr>
+        <tr><td>ACABADO</td><td class="mono">FR (flor regular)</td><td>OK</td></tr>
+        <tr><td>COLOR</td><td class="mono">Blanco mate</td><td>OK</td></tr>
+      </table>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Configuración consistente · 5 de 5 características asignadas</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica el material configurable <span class="mono">KMAT</span> a simular.</li>
+    <li>Asigna valores a cada característica. Las dependencias filtran opciones incompatibles.</li>
+    <li>Verifica que el estado sea consistente (sin conflictos).</li>
+    <li>Usa esta configuración como base para cotizar o copiarla al pedido en <span class="mono">VA01</span>.</li>
+  </ol>
+
+  <div class="note tip"><strong>Tip:</strong> si una combinación es inválida (p. ej. un ancho no disponible
+  para ese calibre), SAP lo marca aquí antes de comprometer un pedido real.</div>
+</section>
+
+<!-- ============ MD50 ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 2 · Planeación</span></div>
+  <div class="tx-head"><span class="tx-code">MD50</span><span class="tx-name">Planificación de orden de venta</span></div>
+  <div class="tx-phase">Fase 2 · Planeación · MRP individual</div>
+  <p>Corre el cálculo de necesidades (MRP) solo para el pedido configurado. Genera órdenes planificadas
+  y reserva la materia prima con el segmento de stock <span class="mono">E</span>.</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Planif. necesidades para pedido cliente</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Programa</span><span>Tratar</span><span>Pasar a</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nMD50" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Pedido de venta</span><span class="sap-fld fill">4500001234</span>
+        <span class="lab req">Posición</span><span class="sap-fld fill">10</span>
+        <span class="lab">Centro</span><span class="sap-fld fill">1000</span>
+        <span class="lab">Clave tratam.</span><span class="sap-fld">NETCH</span>
+      </div>
+      <div class="sap-section-title">Parámetros de control</div>
+      <div class="sap-grid">
+        <span class="lab">Crear listas MRP</span><span class="sap-fld">1</span>
+        <span class="lab">Modo planific.</span><span class="sap-fld">1</span>
+        <span class="lab">Programación</span><span class="sap-fld">2</span>
+        <span class="lab"></span><span class="sap-fld" style="border:none; background:transparent;"></span>
+      </div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>MRP ejecutado · 1 orden planificada creada</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica el número de pedido de venta y posición a planificar.</li>
+    <li>Confirma centro y claves de tratamiento (valores por defecto suelen servir).</li>
+    <li>Ejecuta. SAP crea órdenes planificadas con la configuración heredada.</li>
+    <li>Revisa el resultado en <span class="mono">MD04</span> (lista stock/necesidades).</li>
+  </ol>
+
+  <div class="note info"><strong>Segregación:</strong> en <span class="mono">MD04</span> verás líneas marcadas
+  con <em>OrdCl</em> (orden de cliente) y el número de pedido. La materia prima queda reservada exclusivamente
+  para esa combinación pedido+posición.</div>
+</section>
+
+<!-- ============ CO40 ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 3 · Producción</span></div>
+  <div class="tx-head"><span class="tx-code">CO40</span><span class="tx-name">Convertir orden planificada</span></div>
+  <div class="tx-phase">Fase 3 · Producción · creación de orden</div>
+  <p>Convierte la orden planificada (resultado del MRP) en una orden de producción ejecutable. La orden
+  hereda la configuración: lista de materiales y ruta ya vienen filtradas según la variante.</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Convertir órd.planificada en órd.fabric.</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Orden</span><span>Tratar</span><span>Pasar a</span><span>Funciones</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nCO40" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Orden planificada</span><span class="sap-fld fill">0000123456</span>
+        <span class="lab req">Clase de orden</span><span class="sap-fld fill">PP01</span>
+      </div>
+      <div class="sap-section-title">Cantidades y fechas</div>
+      <div class="sap-grid">
+        <span class="lab">Material</span><span class="sap-fld fill">KMAT-LAM-001</span>
+        <span class="lab">Cantidad orden</span><span class="sap-fld fill">50,000 KG</span>
+        <span class="lab">Inicio</span><span class="sap-fld">02.06.2026</span>
+        <span class="lab">Fin</span><span class="sap-fld">10.06.2026</span>
+      </div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Orden de producción 60003344 creada</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica el número de orden planificada (visible en <span class="mono">MD04</span>).</li>
+    <li>Confirma la clase de orden de producción (ej. <span class="mono">PP01</span>).</li>
+    <li>Verifica material, cantidad y fechas.</li>
+    <li>Ejecuta la conversión. Anota el número de orden de producción generado.</li>
+  </ol>
+
+  <div class="note tip"><strong>Alternativa:</strong> con <span class="mono">CO08</span> puedes crear la orden
+  de producción directamente desde el pedido de venta, sin pasar por la planificada (útil para urgencias).</div>
+</section>
+
+<!-- ============ CO02 ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 3 · Producción</span></div>
+  <div class="tx-head"><span class="tx-code">CO02</span><span class="tx-name">Liberar orden de producción</span></div>
+  <div class="tx-phase">Fase 3 · Producción · liberación</div>
+  <p>Libera la orden (status <span class="mono">REL</span>). Hasta liberarla no se pueden confirmar
+  operaciones ni mover inventario. Al liberar se pueden imprimir los documentos de trabajo.</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Modificar orden de producción</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Orden</span><span>Tratar</span><span>Pasar a</span><span>Funciones</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nCO02" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#9873;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Orden</span><span class="sap-fld fill">60003344</span>
+        <span class="lab">Material</span><span class="sap-fld fill">KMAT-LAM-001</span>
+        <span class="lab">Status sistema</span><span class="sap-fld fill">CRTD MANC SETC</span>
+        <span class="lab">Cantidad</span><span class="sap-fld fill">50,000 KG</span>
+      </div>
+      <div class="sap-tabs">
+        <span class="sap-tab active">Cabecera</span><span class="sap-tab">Operaciones</span><span class="sap-tab">Componentes</span><span class="sap-tab">Costes</span>
+      </div>
+      <div class="note info" style="margin:0;">Menú: <strong>Funciones &#8594; Liberar</strong> (o botón de bandera).
+        El status cambia de <span class="mono">CRTD</span> a <span class="mono">REL</span>.</div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Orden 60003344 liberada (REL)</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Abre la orden de producción por su número.</li>
+    <li>Verifica componentes y operaciones (pestañas).</li>
+    <li>Menú <strong>Funciones &#8594; Liberar</strong>.</li>
+    <li>Guarda. El status pasa a <span class="mono">REL</span> y se habilitan confirmaciones y movimientos.</li>
+  </ol>
+</section>
+
+<!-- ============ CO11N ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 3 · Producción</span></div>
+  <div class="tx-head"><span class="tx-code">CO11N</span><span class="tx-name">Confirmar operación</span></div>
+  <div class="tx-phase">Fase 3 · Producción · confirmación</div>
+  <p>Registra el avance de cada operación de la ruta: cantidad producida, tiempos (máquina/mano de obra)
+  y mermas. Puede disparar el consumo automático de componentes (back-flush).</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Confirmación tiempo real para orden</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Confirmación</span><span>Tratar</span><span>Pasar a</span><span>Detalles</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nCO11N" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Orden</span><span class="sap-fld fill">60003344</span>
+        <span class="lab req">Operación</span><span class="sap-fld fill">0010</span>
+      </div>
+      <div class="sap-section-title">Cantidades</div>
+      <div class="sap-grid">
+        <span class="lab">Ctd. buena</span><span class="sap-fld fill">49,200 KG</span>
+        <span class="lab">Ctd. desecho</span><span class="sap-fld">800 KG</span>
+        <span class="lab">Ctd. retrabajo</span><span class="sap-fld">0</span>
+        <span class="lab">Notif. final</span><span class="sap-fld">&#10003;</span>
+      </div>
+      <div class="sap-section-title">Tiempos</div>
+      <div class="sap-grid">
+        <span class="lab">Tpo. máquina</span><span class="sap-fld fill">6,5 H</span>
+        <span class="lab">Tpo. M.O.</span><span class="sap-fld fill">7,0 H</span>
+        <span class="lab">Centro trabajo</span><span class="sap-fld fill">LINEA-CORTE-1</span>
+        <span class="lab">Fecha</span><span class="sap-fld">05.06.2026</span>
+      </div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Confirmación 1 guardada para operación 0010</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica orden y número de operación a confirmar.</li>
+    <li>Captura cantidad buena, desecho (merma) y retrabajo.</li>
+    <li>Registra tiempos de máquina y mano de obra.</li>
+    <li>Marca <em>notificación final</em> si es la última confirmación de la operación.</li>
+    <li>Guarda. Si la operación tiene back-flush, se consume material automáticamente.</li>
+  </ol>
+
+  <div class="note warn"><strong>Material del cliente:</strong> si el flujo usa stock <span class="mono">O</span>,
+  la merma se descuenta del lote del cliente y debe quedar reportada.</div>
+</section>
+
+<!-- ============ MIGO ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 4 · Inventario</span></div>
+  <div class="tx-head"><span class="tx-code">MIGO</span><span class="tx-name">Movimientos de mercancías</span></div>
+  <div class="tx-phase">Fase 4 · Inventario · entradas, consumos y recepciones</div>
+  <p>Transacción única para todos los movimientos de inventario. La acción + clase de movimiento definen
+  qué ocurre.</p>
+
+  <table class="grid">
+    <tr><th>Mov.</th><th>Acción</th><th>Uso en este flujo</th></tr>
+    <tr><td class="mono">261</td><td>Salida de mercancías</td><td>Consumo de componentes a la orden de producción</td></tr>
+    <tr><td class="mono">101</td><td>Entrada de mercancías</td><td>Recepción de producto terminado (a stock E)</td></tr>
+    <tr><td class="mono">501</td><td>Entrada sin pedido</td><td>Recepción de material del cliente (a stock O)</td></tr>
+  </table>
+
+  <div class="sap">
+    <div class="sap-title"><span>MIGO · Entrada de mercancías · Orden de fabricación</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Movimiento mercancías</span><span>Tratar</span><span>Pasar a</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nMIGO" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Acción</span><span class="sap-fld fill">A01 Entrada mercancías</span>
+        <span class="lab req">Referencia</span><span class="sap-fld fill">R08 Orden fabricación</span>
+        <span class="lab req">Orden</span><span class="sap-fld fill">60003344</span>
+        <span class="lab req">Clase mov.</span><span class="sap-fld fill">101</span>
+      </div>
+      <div class="sap-section-title">Detalle de posición</div>
+      <table class="grid">
+        <tr><th>Material</th><th>Cantidad</th><th>Almacén</th><th>Tipo stock</th><th>Pedido cliente</th></tr>
+        <tr><td class="mono">KMAT-LAM-001</td><td>49,200 KG</td><td>0001</td><td class="mono">E</td><td class="mono">4500001234/10</td></tr>
+      </table>
+      <div class="note info" style="margin:8px 0 0;">El campo <strong>Tipo de stock E</strong> + <strong>Pedido cliente</strong>
+        es lo que hace que el producto entre apartado, no a stock libre.</div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Documento de material 4900012345 contabilizado</div>
+  </div>
+
+  <h3>Pasos (recepción de PT — mov. 101)</h3>
+  <ol class="steps">
+    <li>Selecciona acción <em>Entrada de mercancías</em> + referencia <em>Orden de fabricación</em>.</li>
+    <li>Indica el número de orden de producción.</li>
+    <li>Verifica cantidad, almacén y que el tipo de stock sea <span class="mono">E</span> con el pedido.</li>
+    <li>Marca "OK" en la posición y contabiliza con <span class="mono">Ctrl+S</span>.</li>
+  </ol>
+</section>
+
+<!-- ============ MMBE ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 4 · Inventario</span></div>
+  <div class="tx-head"><span class="tx-code">MMBE</span><span class="tx-name">Resumen de stocks</span></div>
+  <div class="tx-phase">Fase 4 · Inventario · consulta</div>
+  <p>Muestra el stock de un material desglosado por centro, almacén y tipo de stock. Permite ver el
+  inventario apartado por pedido (segmento E) y el material del cliente (segmento O).</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Resumen de stocks</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Resumen stocks</span><span>Tratar</span><span>Pasar a</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nMMBE" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Material</span><span class="sap-fld fill">KMAT-LAM-001</span>
+        <span class="lab">Centro</span><span class="sap-fld fill">1000</span>
+      </div>
+      <div class="sap-section-title">Stocks</div>
+      <table class="grid">
+        <tr><th>Nivel</th><th>Libre util.</th><th>Stock pedido (E)</th><th>Consig. cliente (O)</th></tr>
+        <tr><td>Centro 1000</td><td>0 KG</td><td>49,200 KG</td><td>80,000 KG</td></tr>
+        <tr><td>Almacén 0001</td><td>0 KG</td><td>49,200 KG</td><td>80,000 KG</td></tr>
+      </table>
+      <div class="note info" style="margin:8px 0 0;">El stock del pedido (E) y el consignado (O) <strong>no
+        suman</strong> con el inventario de libre utilización. Están apartados.</div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Stocks actualizados</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica el material (y opcionalmente centro/almacén).</li>
+    <li>Ejecuta. Expande los nodos para ver el desglose por tipo de stock.</li>
+    <li>Identifica el segmento <span class="mono">E</span> (pedido) u <span class="mono">O</span> (cliente).</li>
+  </ol>
+</section>
+
+<!-- ============ VL01N ============ -->
+<section class="page">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 5 · Entrega</span></div>
+  <div class="tx-head"><span class="tx-code">VL01N</span><span class="tx-name">Crear entrega de salida</span></div>
+  <div class="tx-phase">Fase 5 · Entrega · embarque</div>
+  <p>Crea la entrega contra el pedido. Solo permite la cantidad que existe en el stock apartado (E) del
+  pedido. Incluye picking y la salida de mercancías (PGI, mov. 601).</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Crear entrega de salida con referencia a pedido</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Entrega salida</span><span>Tratar</span><span>Pasar a</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nVL01N" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Puesto exped.</span><span class="sap-fld fill">1000</span>
+        <span class="lab req">Pedido</span><span class="sap-fld fill">4500001234</span>
+        <span class="lab">Fecha selección</span><span class="sap-fld">12.06.2026</span>
+        <span class="lab"></span><span class="sap-fld" style="border:none;background:transparent;"></span>
+      </div>
+      <div class="sap-section-title">Posiciones</div>
+      <table class="grid">
+        <tr><th>Pos.</th><th>Material</th><th>Ctd. entrega</th><th>Ctd. picking</th><th>Almacén</th></tr>
+        <tr><td>10</td><td class="mono">KMAT-LAM-001</td><td>49,200 KG</td><td>49,200 KG</td><td>0001</td></tr>
+      </table>
+      <div class="note info" style="margin:8px 0 0;">Picking + <strong>Contabilizar salida (PGI)</strong> reduce
+        el stock E a cero y genera el documento de costo (mov. 601).</div>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Entrega 80004455 creada · salida contabilizada</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica puesto de expedición y número de pedido.</li>
+    <li>SAP propone la entrega con la cantidad disponible apartada.</li>
+    <li>Captura la cantidad de picking (toma física del material).</li>
+    <li>Ejecuta <strong>Contabilizar salida de mercancías</strong> (PGI).</li>
+    <li>Guarda. Anota el número de entrega.</li>
+  </ol>
+</section>
+
+<!-- ============ VF01 ============ -->
+<section class="page" style="page-break-after:auto;">
+  <div class="runhead"><svg class="logo-mark"><use href="#aliacer-logo"/></svg><span>Fase 6 · Facturación</span></div>
+  <div class="tx-head"><span class="tx-code">VF01</span><span class="tx-name">Crear factura</span></div>
+  <div class="tx-phase">Fase 6 · Facturación · cierre del ciclo</div>
+  <p>Genera la factura con referencia a la entrega. En el escenario estándar cobra material + servicio;
+  en el escenario con material del cliente cobra solo el servicio de maquila.</p>
+
+  <div class="sap">
+    <div class="sap-title"><span>Crear factura</span><span class="win-btns"><span></span><span></span><span></span></span></div>
+    <div class="sap-menu"><span>Documento facturación</span><span>Tratar</span><span>Pasar a</span><span>Entorno</span><span>Sistema</span><span>Ayuda</span></div>
+    <div class="sap-toolbar">
+      <span class="sap-icon go">&#10003;</span><span class="sap-cmd"><input class="mono" value="/nVF01" readonly></span>
+      <span class="sap-icon">&#128190;</span><span class="sap-icon">&#8592;</span><span class="sap-icon">&#10006;</span>
+    </div>
+    <div class="sap-body">
+      <div class="sap-grid">
+        <span class="lab req">Documento</span><span class="sap-fld fill">80004455 (entrega)</span>
+        <span class="lab">Clase factura</span><span class="sap-fld fill">F2</span>
+        <span class="lab">Fecha factura</span><span class="sap-fld">12.06.2026</span>
+        <span class="lab"></span><span class="sap-fld" style="border:none;background:transparent;"></span>
+      </div>
+      <div class="sap-section-title">Posiciones</div>
+      <table class="grid">
+        <tr><th>Pos.</th><th>Descripción</th><th>Cantidad</th><th>Precio</th><th>Importe</th></tr>
+        <tr><td>10</td><td>Lámina galvanizada config. (cal 26, AZ50)</td><td>49,200 KG</td><td>$5.00/KG</td><td>$246,000.00</td></tr>
+      </table>
+    </div>
+    <div class="sap-status"><span class="dot"></span>Factura 90007788 creada · pendiente de contabilizar</div>
+  </div>
+
+  <h3>Pasos</h3>
+  <ol class="steps">
+    <li>Indica el documento de referencia (entrega) y clase de factura (<span class="mono">F2</span>).</li>
+    <li>Verifica posiciones, cantidades y precios.</li>
+    <li>Guarda. Para liberar a contabilidad usa <span class="mono">VF02</span> &#8594; Contabilizar.</li>
+  </ol>
+
+  <div class="note tip"><strong>Material del cliente (CFM):</strong> la posición factura el servicio de
+  maquila (por tonelada procesada o tarifa fija), no el valor del material. Acompaña el reporte de mermas.</div>
+
+  <div style="margin-top:30px; text-align:center; color:var(--ink-muted); font-size:11px;
+              border-top:1px solid var(--line); padding-top:14px;">
+    <svg class="logo-mark" style="width:34mm; color:var(--ocean); margin-bottom:6px;"><use href="#aliacer-logo"/></svg>
+    <div class="mono">Manual de Usuario · Maquila MTO/KMAT · SAP S/4HANA · Aliacer · 2026</div>
+  </div>
+</section>
+
+</body>
+</html>

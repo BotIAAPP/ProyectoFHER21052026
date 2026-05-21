@@ -1,0 +1,188 @@
+{
+  "titulo": "Script de Pruebas (UAT)",
+  "subtitulo": "Maquila al cliente · Make-to-Order con materiales configurables",
+  "sistema": "SAP S/4HANA",
+  "meta": [
+    ["Proyecto", "Maquila MTO con materiales configurables (KMAT)"],
+    ["Módulo(s)", "SD · PP · MM"],
+    ["Tipo de documento", "Script de pruebas / Casos de prueba (UAT)"],
+    ["Versión", "1.0"],
+    ["Fecha", "2026-05-21"],
+    ["Elaboró", "________________________"],
+    ["Revisó", "________________________"],
+    ["Aprobó", "________________________"]
+  ],
+  "objetivo": "Validar de extremo a extremo el proceso de maquila al cliente bajo el modelo Make-to-Order con materiales configurables en SAP S/4HANA, desde la captura del pedido configurado hasta la facturación, verificando la correcta segregación de inventario por pedido (stock E) y de material del cliente (stock O).",
+  "alcance": [
+    "Captura de pedido de venta con material configurable (KMAT) y categoría de posición TAC.",
+    "Configuración de características y validación de dependencias.",
+    "Planificación individual de la orden de venta (MRP) y reserva de materia prima.",
+    "Conversión, liberación y confirmación de la orden de producción.",
+    "Movimientos de inventario: consumo (261), recepción de PT (101), recepción de material del cliente (501).",
+    "Verificación de stock segregado (segmentos E y O).",
+    "Entrega de salida con picking y salida de mercancías (PGI 601).",
+    "Facturación: escenario estándar (material + servicio) y maquila (solo servicio)."
+  ],
+  "precondiciones": [
+    "Datos maestros de Variant Configuration creados: características (CT04), clase 300 (CL02), material KMAT (MM01), perfil de configuración (CU41), super-BOM (CS01), ruta (CA01) y dependencias de objeto (CU01).",
+    "Cliente (solicitante) dado de alta con datos de ventas para la organización 1000.",
+    "Usuario de pruebas con autorizaciones para SD, PP y MM.",
+    "Mandante de pruebas (QAS) con datos representativos.",
+    "Disponibilidad de materia prima o, en escenario de material del cliente, recepción previa del material consignado."
+  ],
+  "leyenda": "Estado: OK = pasó · NOK = falló · N/A = no aplica. Registre el resultado obtenido y cualquier desviación en la columna correspondiente.",
+  "casos": [
+    {
+      "id": "TC-01",
+      "transaccion": "VA01",
+      "nombre": "Crear pedido de venta con material configurable",
+      "objetivo": "Verificar que al capturar un material KMAT se dispara la pantalla de configuración y el pedido se guarda con categoría de posición TAC.",
+      "precondiciones": "Cliente 100245 activo. Material KMAT-LAM-001 con perfil de configuración asignado.",
+      "pasos": [
+        ["Ejecutar la transacción VA01.", "/nVA01", "Se abre la pantalla inicial de creación de pedido."],
+        ["Indicar clase de pedido y datos de organización.", "Clase: OR · Org.ventas: 1000 · Canal: 10 · Sector: 00", "El sistema acepta los datos y muestra la pantalla de resumen."],
+        ["Capturar el solicitante y la fecha de entrega.", "Solicitante: 100245 · Fecha entrega: 15.06.2026", "Se cargan los datos del cliente."],
+        ["Capturar la posición con el material configurable.", "Material: KMAT-LAM-001 · Cantidad: 50000 KG", "Al dar Enter se abre la pantalla de configuración de características."],
+        ["Asignar valores a las características.", "CALIBRE: C26 · ANCHO: 48\" · RECUBRIMIENTO: AZ50 · ACABADO: FR · COLOR: Blanco mate", "Las dependencias filtran opciones incompatibles; la configuración queda consistente."],
+        ["Guardar el pedido.", "Ctrl+S", "El sistema genera y muestra el número de pedido de venta. La categoría de posición es TAC."]
+      ]
+    },
+    {
+      "id": "TC-02",
+      "transaccion": "CU50",
+      "nombre": "Simular configuración (cotización previa)",
+      "objetivo": "Validar que se puede armar y verificar una configuración sin crear el pedido.",
+      "precondiciones": "Material KMAT-LAM-001 con perfil de configuración.",
+      "pasos": [
+        ["Ejecutar la transacción CU50.", "/nCU50", "Se abre la pantalla de simulación."],
+        ["Indicar el material configurable.", "Material: KMAT-LAM-001", "Se muestran las características disponibles."],
+        ["Asignar valores a cada característica.", "C26 / 48\" / AZ50 / FR / Blanco mate", "El estado de la configuración es consistente (5 de 5)."],
+        ["Intentar una combinación inválida.", "ANCHO no disponible para el calibre elegido", "El sistema marca el conflicto y no permite continuar."]
+      ]
+    },
+    {
+      "id": "TC-03",
+      "transaccion": "MD50",
+      "nombre": "Planificación individual de la orden de venta (MRP)",
+      "objetivo": "Verificar que el MRP genera órdenes planificadas y reserva la materia prima con segmento de stock E.",
+      "precondiciones": "Pedido de venta del TC-01 guardado (ej. 4500001234).",
+      "pasos": [
+        ["Ejecutar la transacción MD50.", "/nMD50", "Se abre la pantalla de planificación por pedido."],
+        ["Indicar el pedido de venta y posición.", "Pedido: 4500001234 · Posición: 10", "El sistema acepta la referencia."],
+        ["Ejecutar la planificación.", "Enter / Ejecutar", "Se crea al menos una orden planificada con la configuración heredada."],
+        ["Verificar el resultado en MD04.", "/nMD04 · Material KMAT-LAM-001", "Las necesidades aparecen marcadas con el pedido de cliente (segmento E)."]
+      ]
+    },
+    {
+      "id": "TC-04",
+      "transaccion": "CO40",
+      "nombre": "Convertir orden planificada en orden de producción",
+      "objetivo": "Validar la conversión de la orden planificada a orden de producción con BOM y ruta filtradas por configuración.",
+      "precondiciones": "Orden planificada generada en TC-03.",
+      "pasos": [
+        ["Ejecutar la transacción CO40.", "/nCO40", "Se abre la pantalla de conversión."],
+        ["Indicar la orden planificada y la clase de orden.", "Orden planif.: 0000123456 · Clase: PP01", "El sistema carga material, cantidad y fechas."],
+        ["Verificar componentes y operaciones.", "Pestañas Componentes y Operaciones", "Solo aparecen los componentes y pasos que aplican a la variante configurada."],
+        ["Ejecutar la conversión y guardar.", "Guardar", "Se genera el número de orden de producción (ej. 60003344)."]
+      ]
+    },
+    {
+      "id": "TC-05",
+      "transaccion": "CO02",
+      "nombre": "Liberar la orden de producción",
+      "objetivo": "Verificar que la orden cambia a status REL y se habilitan confirmaciones y movimientos.",
+      "precondiciones": "Orden de producción creada en TC-04.",
+      "pasos": [
+        ["Ejecutar la transacción CO02.", "/nCO02 · Orden: 60003344", "Se abre la orden en modo modificación."],
+        ["Liberar la orden.", "Menú: Funciones → Liberar", "El status del sistema cambia de CRTD a REL."],
+        ["Guardar.", "Ctrl+S", "La orden queda liberada; se pueden imprimir documentos de trabajo."]
+      ]
+    },
+    {
+      "id": "TC-06",
+      "transaccion": "CO11N",
+      "nombre": "Confirmar operación de producción",
+      "objetivo": "Registrar avance, tiempos y mermas; validar el back-flush de componentes.",
+      "precondiciones": "Orden liberada (TC-05).",
+      "pasos": [
+        ["Ejecutar la transacción CO11N.", "/nCO11N", "Se abre la pantalla de confirmación."],
+        ["Indicar orden y operación.", "Orden: 60003344 · Operación: 0010", "Se cargan los datos de la operación."],
+        ["Capturar cantidades.", "Buena: 49200 KG · Desecho: 800 KG", "El sistema acepta las cantidades."],
+        ["Capturar tiempos y centro de trabajo.", "Máquina: 6.5 H · M.O.: 7.0 H · CT: LINEA-CORTE-1", "Se registran los tiempos."],
+        ["Marcar notificación final y guardar.", "Notif. final + Ctrl+S", "Se contabiliza la confirmación; si hay back-flush, se consumen componentes (mov. 261)."]
+      ]
+    },
+    {
+      "id": "TC-07",
+      "transaccion": "MIGO (261)",
+      "nombre": "Consumo de componentes a la orden",
+      "objetivo": "Verificar la salida de materia prima contra la orden de producción.",
+      "precondiciones": "Orden liberada con componentes reservados.",
+      "pasos": [
+        ["Ejecutar MIGO.", "/nMIGO", "Se abre la pantalla de movimientos."],
+        ["Seleccionar acción y referencia.", "Salida de mercancías · Orden de fabricación · 60003344", "Se cargan los componentes de la orden."],
+        ["Confirmar clase de movimiento 261.", "Clase mov.: 261", "El movimiento queda definido como consumo a la orden."],
+        ["Marcar OK y contabilizar.", "OK + Ctrl+S", "Se genera el documento de material; el stock del componente disminuye."]
+      ]
+    },
+    {
+      "id": "TC-08",
+      "transaccion": "MIGO (101)",
+      "nombre": "Recepción de producto terminado a stock E",
+      "objetivo": "Validar que el PT entra a stock especial E asociado al pedido, no a stock libre.",
+      "precondiciones": "Orden de producción confirmada (TC-06).",
+      "pasos": [
+        ["Ejecutar MIGO.", "/nMIGO", "Se abre la pantalla de movimientos."],
+        ["Seleccionar acción y referencia.", "Entrada de mercancías · Orden de fabricación · 60003344", "Se carga la posición de PT."],
+        ["Verificar clase de movimiento y tipo de stock.", "Clase mov.: 101 · Tipo stock: E · Pedido: 4500001234/10", "El destino es stock especial E con el pedido como dueño."],
+        ["Marcar OK y contabilizar.", "OK + Ctrl+S", "Se genera el documento de material; el PT entra apartado para el pedido."]
+      ]
+    },
+    {
+      "id": "TC-09",
+      "transaccion": "MMBE",
+      "nombre": "Verificar stock segregado",
+      "objetivo": "Comprobar que el stock del pedido (E) y el del cliente (O) no suman con el stock de libre utilización.",
+      "precondiciones": "PT recibido (TC-08) y/o material del cliente recibido (mov. 501).",
+      "pasos": [
+        ["Ejecutar MMBE.", "/nMMBE · Material: KMAT-LAM-001", "Se muestra el resumen de stocks."],
+        ["Expandir el desglose por tipo de stock.", "Nodos centro/almacén", "Se distinguen los segmentos E (pedido) y O (cliente)."],
+        ["Verificar que el stock libre no incluye el material apartado.", "Comparar columnas", "El stock E y O aparecen separados del stock de libre utilización."],
+        ["Intentar usar el material apartado en otro pedido.", "Asignación a pedido distinto", "El sistema bloquea el uso del material reservado."]
+      ]
+    },
+    {
+      "id": "TC-10",
+      "transaccion": "VL01N",
+      "nombre": "Crear entrega de salida y contabilizar PGI",
+      "objetivo": "Validar la entrega contra el pedido y la salida de mercancías (mov. 601).",
+      "precondiciones": "PT disponible en stock E del pedido (TC-08).",
+      "pasos": [
+        ["Ejecutar VL01N.", "/nVL01N", "Se abre la pantalla de creación de entrega."],
+        ["Indicar puesto de expedición y pedido.", "Puesto: 1000 · Pedido: 4500001234", "El sistema propone la entrega con la cantidad apartada."],
+        ["Capturar la cantidad de picking.", "Picking: 49200 KG", "Se registra la toma física del material."],
+        ["Contabilizar salida de mercancías (PGI).", "Botón Contabilizar salida", "El stock E se reduce a cero; se genera el documento de costo (mov. 601)."],
+        ["Guardar.", "Ctrl+S", "Se genera el número de entrega."]
+      ]
+    },
+    {
+      "id": "TC-11",
+      "transaccion": "VF01",
+      "nombre": "Crear factura",
+      "objetivo": "Generar la factura con referencia a la entrega y validar el escenario de cobro.",
+      "precondiciones": "Entrega creada con PGI contabilizado (TC-10).",
+      "pasos": [
+        ["Ejecutar VF01.", "/nVF01", "Se abre la pantalla de creación de factura."],
+        ["Indicar el documento de referencia.", "Entrega: 80004455 · Clase: F2", "El sistema carga las posiciones a facturar."],
+        ["Verificar posiciones, cantidades y precios.", "Revisar importes", "Escenario estándar: material + servicio. Escenario maquila: solo servicio."],
+        ["Guardar.", "Ctrl+S", "Se genera el número de factura."],
+        ["Liberar a contabilidad.", "/nVF02 → Contabilizar", "La factura se contabiliza en FI y queda como cuenta por cobrar."]
+      ]
+    }
+  ],
+  "firma": [
+    "Resultado global de la prueba:   [  ] APROBADO      [  ] APROBADO CON OBSERVACIONES      [  ] RECHAZADO",
+    "Observaciones generales: ____________________________________________________________________",
+    "_____________________________________________________________________________________________"
+  ]
+}
