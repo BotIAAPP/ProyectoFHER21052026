@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MTO-CFM · Operations Manual · SAP S/4HANA · Gilm</title>
+<meta name="description" content="Capacitación interactiva del proceso Make-to-Order con material del cliente (MTO + CFM) en SAP S/4HANA.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,200..800&family=Familjen+Grotesk:wght@400;500;600;700&family=Geist+Mono:wght@100..900&display=swap" rel="stylesheet">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        bg:      { DEFAULT:'#FFFFFF', 80:'#F8F9FB', 60:'#EFF1F4', 40:'#E2E5EA' },
+        line:    { DEFAULT:'#D7DBE2', light:'#E5E8EE' },
+        fg:      { DEFAULT:'#0A0E14', 80:'#1F242C', 60:'#5A6270', 40:'#8A92A0', 20:'#BCC3CD' },
+        cyan:    { DEFAULT:'#0084A8', dim:'#006B8F', glow:'#0096C7' },
+        amber:   { DEFAULT:'#B07A00', dim:'#8C6200' },
+        green:   { DEFAULT:'#1F8F5C', dim:'#166B44' },
+        crit:    { DEFAULT:'#C53030', dim:'#9B2424' }
+      },
+      fontFamily: {
+        display: ['"Bricolage Grotesque"','system-ui','sans-serif'],
+        sans:    ['"Familjen Grotesk"','system-ui','sans-serif'],
+        mono:    ['"Geist Mono"','ui-monospace','monospace']
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Familjen Grotesk', system-ui, sans-serif;
+    background-color: #FFFFFF;
+    color: #0A0E14;
+    min-height: 100vh;
+    font-feature-settings: 'ss01' on;
+  }
+
+  /* Subtle horizontal scanlines */
+  body::before {
+    content:'';
+    position: fixed; inset: 0;
+    background-image: linear-gradient(180deg, transparent 0px, transparent 2px, rgba(0,0,0,0.02) 2px, rgba(0,0,0,0.02) 3px);
+    background-size: 100% 3px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Cyan grid */
+  body::after {
+    content:'';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(90deg, rgba(0,132,168,0.05) 1px, transparent 1px),
+      linear-gradient(0deg,  rgba(0,132,168,0.05) 1px, transparent 1px);
+    background-size: 64px 64px;
+    pointer-events: none;
+    z-index: 1;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 90%);
+  }
+
+  header, main, footer { position: relative; z-index: 2; }
+
+  /* Typography utilities */
+  .font-display-tight {
+    font-family:'Bricolage Grotesque','system-ui',sans-serif;
+    font-variation-settings:'wdth' 75, 'opsz' 96, 'wght' 700;
+    letter-spacing:-0.04em;
+    line-height: 0.95;
+  }
+  .font-display-wide {
+    font-family:'Bricolage Grotesque','system-ui',sans-serif;
+    font-variation-settings:'wdth' 100, 'opsz' 96, 'wght' 500;
+    letter-spacing:-0.03em;
+  }
+  .font-display-condensed {
+    font-family:'Bricolage Grotesque','system-ui',sans-serif;
+    font-variation-settings:'wdth' 75, 'opsz' 48, 'wght' 600;
+    letter-spacing:-0.02em;
+  }
+  .label {
+    font-family:'Geist Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .tnum { font-feature-settings:'tnum' on, 'lnum' on; }
+
+  /* Mono header — // PHASE_XX_NAME */
+  .mono-h::before {
+    content:'//';
+    color: #0084A8;
+    margin-right: 8px;
+    opacity: .8;
+  }
+
+  /* Big chapter number */
+  .chapter-num {
+    font-family:'Geist Mono', monospace;
+    font-weight: 200;
+    font-size: clamp(140px, 20vw, 260px);
+    line-height: 0.85;
+    color: transparent;
+    -webkit-text-stroke: 1.2px rgba(0,132,168,0.35);
+    user-select: none; pointer-events: none;
+    font-feature-settings:'tnum' on;
+  }
+
+  /* HUD frame with corner brackets */
+  .hud {
+    position: relative;
+    border: 1px solid rgba(0,132,168,0.3);
+    background: rgba(248,249,251,0.65);
+    backdrop-filter: blur(6px);
+  }
+  .hud::before,
+  .hud::after,
+  .hud > .corner-tl,
+  .hud > .corner-br {
+    content:''; position:absolute;
+    width: 18px; height: 18px;
+    border-color: #0084A8;
+    border-style: solid;
+  }
+  .hud::before { top:-1px; left:-1px; border-width: 1.5px 0 0 1.5px; }
+  .hud::after  { top:-1px; right:-1px; border-width: 1.5px 1.5px 0 0; }
+  .hud > .corner-tl { bottom:-1px; left:-1px; border-width: 0 0 1.5px 1.5px; }
+  .hud > .corner-br { bottom:-1px; right:-1px; border-width: 0 1.5px 1.5px 0; }
+
+  /* Slide reveal */
+  .slide { display: none; }
+  .slide.active { display: block; }
+  .slide.active .reveal {
+    animation: reveal 0.7s cubic-bezier(0.16,1,0.3,1) both;
+  }
+  .slide.active .reveal-1 { animation-delay: 0.06s; }
+  .slide.active .reveal-2 { animation-delay: 0.14s; }
+  .slide.active .reveal-3 { animation-delay: 0.22s; }
+  .slide.active .reveal-4 { animation-delay: 0.30s; }
+  .slide.active .reveal-5 { animation-delay: 0.38s; }
+  .slide.active .reveal-6 { animation-delay: 0.46s; }
+  .slide.active .reveal-7 { animation-delay: 0.54s; }
+  @keyframes reveal {
+    from { opacity: 0; transform: translateY(14px); filter: blur(3px); }
+    to   { opacity: 1; transform: translateY(0); filter: blur(0); }
+  }
+
+  /* Stepper segments */
+  @keyframes pulse-glow {
+    0%,100% { box-shadow: 0 0 0 0 rgba(0,132,168,0.4); }
+    50%     { box-shadow: 0 0 0 6px rgba(0,132,168,0); }
+  }
+  .step-seg { transition: all .25s ease; }
+  .step-seg.completed .step-bar { background: #1F8F5C; }
+  .step-seg.completed .step-num { color: #1F8F5C; border-color: #1F8F5C; }
+  .step-seg.active .step-bar    { background: #0084A8; animation: pulse-glow 1.6s ease-in-out infinite; }
+  .step-seg.active .step-num    { color: #0084A8; border-color: #0084A8; }
+
+  .step-bar { height: 3px; background: #D7DBE2; }
+  .step-num {
+    font-family:'Geist Mono', monospace;
+    font-size: 10px;
+    width: 22px; height: 22px;
+    border: 1px solid #BCC3CD;
+    color: #8A92A0;
+    background: #FFFFFF;
+    display: inline-flex; align-items: center; justify-content: center;
+    transition: all .25s ease;
+  }
+
+  /* Role chips */
+  .role {
+    font-family:'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 4px 9px;
+    border: 1px solid currentColor;
+    background: rgba(255,255,255,0.6);
+    font-weight: 500;
+  }
+  .role-cliente   { color: #5A6270; }
+  .role-ventas    { color: #B07A00; }
+  .role-planeacion{ color: #0084A8; }
+  .role-produccion{ color: #C53030; }
+  .role-almacen   { color: #0A0E14; }
+  .role-finanzas  { color: #1F8F5C; }
+
+  /* Tech chips */
+  .chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family:'Geist Mono', monospace; font-size: 11px;
+    padding: 4px 10px;
+    border: 1px solid #D7DBE2;
+    background: #FFFFFF;
+    color: #1F242C;
+  }
+  .chip-tx    { border-color: rgba(0,132,168,0.4); }
+  .chip-tx::before    { content:'TX'; padding:1px 4px; background:#0084A8; color:#FFFFFF; font-weight:700; font-size:8px; }
+  .chip-mov   { border-color: rgba(176,122,0,0.5); }
+  .chip-mov::before   { content:'MOV'; padding:1px 4px; background:#B07A00; color:#FFFFFF; font-weight:700; font-size:8px; }
+  .chip-doc   { border-color: rgba(90,98,112,0.5); }
+  .chip-doc::before   { content:'DOC'; padding:1px 4px; background:#5A6270; color:#FFFFFF; font-weight:700; font-size:8px; }
+  .chip-key   { border-color: rgba(197,48,48,0.5); }
+  .chip-key::before   { content:'KEY'; padding:1px 4px; background:#C53030; color:#FFFFFF; font-weight:700; font-size:8px; }
+
+  /* Buttons */
+  .btn {
+    font-family:'Geist Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 500;
+    padding: 12px 22px;
+    border: 1px solid currentColor;
+    background: transparent;
+    transition: all .2s ease;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .btn-prim {
+    color: #0084A8;
+    background: rgba(0,132,168,0.06);
+    box-shadow: inset 0 0 0 1px rgba(0,132,168,0.5);
+  }
+  .btn-prim:hover:not(:disabled) {
+    background: #0084A8;
+    color: #FFFFFF;
+    box-shadow: 0 0 16px rgba(0,132,168,0.3);
+  }
+  .btn-sec { color: #5A6270; border-color: #BCC3CD; background: #FFFFFF; }
+  .btn-sec:hover:not(:disabled) { color: #0A0E14; border-color: #0A0E14; }
+  .btn:disabled { opacity: .3; cursor: not-allowed; }
+
+  /* Marquee */
+  .marquee { overflow: hidden; mask-image: linear-gradient(to right, transparent, black 6%, black 94%, transparent); }
+  .marquee-track { display: inline-flex; gap: 56px; animation: marquee 70s linear infinite; white-space: nowrap; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* Data table */
+  table.data { width: 100%; border-collapse: collapse; }
+  table.data th, table.data td {
+    padding: 10px 0;
+    border-bottom: 1px solid #E5E8EE;
+    text-align: left;
+    font-size: 13px;
+  }
+  table.data th {
+    font-family: 'Geist Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #5A6270;
+    font-weight: 500;
+  }
+  table.data td.key { font-family: 'Geist Mono', monospace; color: #B07A00; font-weight: 500; width: 30%; }
+
+  /* Selection */
+  ::selection { background: #0084A8; color: #FFFFFF; }
+
+  kbd {
+    font-family:'Geist Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border: 1px solid #BCC3CD;
+    color: #1F242C;
+    background: #F8F9FB;
+  }
+
+  /* Highlight number reveal */
+  .big-num {
+    font-family: 'Geist Mono', monospace;
+    font-variation-settings: 'wght' 300;
+    font-feature-settings:'tnum' on;
+    letter-spacing: -0.05em;
+  }
+</style>
+</head>
+
+<body>
+
+<!-- ============================ HEADER ============================ -->
+<header class="border-b border-line bg-bg/85 backdrop-blur sticky top-0 z-20">
+  <!-- Top status bar -->
+  <div class="bg-bg-60 border-b border-line">
+    <div class="marquee py-1.5">
+      <div class="marquee-track label text-fg-60">
+        <span class="text-cyan">● SYS_ONLINE</span>
+        <span>SAP S/4HANA · MTO-CFM Module · Operations Manual v.1.0</span>
+        <span class="text-amber">▲ STRATEGY 20</span>
+        <span>Item Cat. KMN/TAN · Req. Type KE</span>
+        <span class="text-cyan">SPECIAL STOCK INDICATOR · E</span>
+        <span>Gilm — Capacitación interna</span>
+        <span class="text-amber">▲ KEY: MOV 501E · 261E · 101E · 601E</span>
+        <span>2026.05.20 · CST-06</span>
+        <span class="text-cyan">● SYS_ONLINE</span>
+        <span>SAP S/4HANA · MTO-CFM Module · Operations Manual v.1.0</span>
+        <span class="text-amber">▲ STRATEGY 20</span>
+        <span>Item Cat. KMN/TAN · Req. Type KE</span>
+        <span class="text-cyan">SPECIAL STOCK INDICATOR · E</span>
+        <span>Gilm — Capacitación interna</span>
+        <span class="text-amber">▲ KEY: MOV 501E · 261E · 101E · 601E</span>
+        <span>2026.05.20 · CST-06</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="max-w-[1400px] mx-auto px-8 py-4">
+    <div class="flex items-center justify-between gap-6 mb-5">
+      <div class="flex items-center gap-3">
+        <!-- Logo -->
+        <svg width="36" height="36" viewBox="0 0 40 40">
+          <rect x="1" y="1" width="38" height="38" fill="#FFFFFF" stroke="#0084A8" stroke-width="0.8"/>
+          <path d="M8 14 L20 8 L32 14 L32 26 L20 32 L8 26 Z" fill="none" stroke="#0084A8" stroke-width="1"/>
+          <circle cx="20" cy="20" r="2.5" fill="#0084A8"/>
+          <circle cx="20" cy="20" r="6" fill="none" stroke="#0084A8" stroke-width="0.4" opacity="0.4"/>
+        </svg>
+        <div>
+          <div class="label text-fg-60 mono-h">MTO_CFM_MANUAL</div>
+          <div class="font-display-condensed text-base text-fg">SAP S/4HANA · Operations</div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-6">
+        <div class="text-right">
+          <div class="label text-fg-60">Frame</div>
+          <div class="font-mono text-sm tnum text-cyan">
+            <span id="current-step">01</span><span class="text-fg-40 mx-1">/</span><span id="total-steps">11</span>
+          </div>
+        </div>
+        <div class="hidden md:block w-px h-10 bg-line"></div>
+        <div class="hidden md:block text-right">
+          <div class="label text-fg-60">Status</div>
+          <div class="label text-cyan">● ACTIVE</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stepper -->
+    <div class="flex items-center gap-2" id="stepper"></div>
+  </div>
+</header>
+
+<!-- ============================ MAIN ============================ -->
+<main class="max-w-[1400px] mx-auto px-8 py-12 lg:py-16">
+
+<!-- ============================ SLIDE 01 ============================ -->
+<section class="slide active" data-step="1">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">01</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_01 · PRE_VENTA</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-cliente">Cliente</span>
+          <span class="role role-ventas">Ventas</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Solicitud<br>y cotización.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-10 reveal reveal-4">
+          El cliente solicita un producto terminado a fabricar con <span class="text-amber font-semibold">su propio material</span>. Ventas elabora la cotización: servicio de maquila, insumos propios, condiciones (precio, plazo, lugar de entrega).
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Outputs</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">VA21</span>
+            <span class="chip chip-doc">QT · Quotation</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HUD panel right -->
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">DATA_FRAME · 001</div>
+          <div class="label text-fg-40">PRE-VENTA</div>
+        </div>
+
+        <div class="big-num text-7xl text-cyan mb-2">QT</div>
+        <div class="label text-fg-60 mb-8">Quotation · documento de salida</div>
+
+        <table class="data">
+          <tr><td class="key">Tx</td><td>VA21 — Create Quotation</td></tr>
+          <tr><td class="key">Tipo</td><td>QT · Quotation document</td></tr>
+          <tr><td class="key">Validez</td><td>Limitada · campo VBKD-VDATU</td></tr>
+          <tr><td class="key">Output</td><td>PDF / impresión / email</td></tr>
+        </table>
+
+        <div class="mt-6 pt-6 border-t border-line">
+          <div class="label text-fg-60 mb-2">Next →</div>
+          <div class="text-sm text-fg-80">Si el cliente acepta, la cotización se referencia al crear el pedido (paso 02).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 02 ============================ -->
+<section class="slide" data-step="2">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">02</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_01 · DOCUMENTO_ANCLA</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-ventas">Ventas</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Pedido de venta<br>MTO.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Se crea el <strong class="text-cyan">Pedido de Venta tipo OR</strong>. La posición usa item category <strong class="text-cyan">TAN</strong> (estándar) o <strong class="text-cyan">KMN</strong> (configurable). El sistema asigna requirement type <strong class="text-cyan">KE</strong> y genera necesidad individual contra <span class="text-amber font-semibold">sales order stock</span>.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Configuración crítica</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">VA01</span>
+            <span class="chip chip-doc">OR · Sales Order</span>
+            <span class="chip chip-key">Strategy 20</span>
+            <span class="chip chip-key">Item Cat. TAN/KMN</span>
+            <span class="chip chip-key">Req. Type KE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">SO_HEADER</div>
+          <div class="label text-fg-40">VA01</div>
+        </div>
+
+        <!-- Mock SO display -->
+        <div class="space-y-3 font-mono text-xs">
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">DOC_NUM</span>
+            <span class="text-fg">5000123456</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">SOLD_TO</span>
+            <span class="text-fg">100245 · ACERO MTY</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">PO_TYPE</span>
+            <span class="text-cyan font-semibold">OR</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">ITEM_CAT</span>
+            <span class="text-cyan font-semibold">TAN</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">STRATEGY</span>
+            <span class="text-amber font-semibold">20 · MTO</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">REQ_TYPE</span>
+            <span class="text-amber font-semibold">KE</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">STOCK_IND</span>
+            <span class="text-amber font-semibold">E · SOS</span>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-line flex items-center gap-2">
+          <span class="w-2 h-2 bg-green rounded-full"></span>
+          <span class="label text-green">STATUS · OPEN</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 03 ============================ -->
+<section class="slide" data-step="3">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">03</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_01 · PLANIFICACIÓN</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-planeacion">Planeación</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          MRP.<br>Run.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          MRP corre sobre el pedido individual. El sistema explota la <span class="text-cyan font-semibold">BOM</span>, identifica los componentes, distingue qué aporta el cliente (CFM) y genera la <strong class="text-cyan">orden planificada</strong> ligada al SO.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Transacciones</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">MD02</span>
+            <span class="chip chip-tx">MD04</span>
+            <span class="chip chip-doc">Planned Order · individual</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">MRP_OUTPUT</div>
+          <div class="label text-fg-40">MD04</div>
+        </div>
+
+        <!-- ASCII-ish stock/req visualization -->
+        <div class="font-mono text-xs leading-relaxed">
+          <div class="text-fg-60 mb-3">// Stock / Requirements list</div>
+          <div class="space-y-1.5">
+            <div class="flex justify-between text-fg-40"><span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></div>
+            <div class="flex justify-between"><span class="text-fg-60">DATE</span><span class="text-fg-60">TYPE       QTY</span></div>
+            <div class="flex justify-between text-fg-40"><span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></div>
+            <div class="flex justify-between"><span class="text-amber font-semibold">15.06.26</span><span><span class="text-cyan font-semibold">CustReq</span>   <span class="text-amber font-semibold">−5,000</span></span></div>
+            <div class="flex justify-between"><span class="text-amber font-semibold">10.06.26</span><span><span class="text-cyan font-semibold">PldOrd</span>    <span class="text-green font-semibold">+5,000</span></span></div>
+            <div class="flex justify-between"><span class="text-amber font-semibold">05.06.26</span><span><span class="text-cyan font-semibold">DepReq</span>    <span class="text-amber font-semibold">−5,000</span></span></div>
+            <div class="flex justify-between text-fg-40"><span>━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></div>
+            <div class="flex justify-between"><span class="text-fg-60">AVAILABLE</span><span class="text-green font-semibold tnum">0</span></div>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-line text-xs text-fg-60">
+          Las CFM aparecen como <span class="text-amber font-semibold">DepReq</span> con stock especial E. No se procuran — el cliente las aporta.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 04 ============================ -->
+<section class="slide" data-step="4">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">04</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_01 · AUTORIZACIÓN</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-produccion">Producción</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Orden de<br>producción.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Producción convierte la orden planificada en una <strong class="text-cyan">Orden de Producción</strong> liberada (tipo <strong class="text-cyan">PP01</strong>). Queda asociada al SO/posición — todos los costos y movimientos se imputan a esa cuenta de objeto.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Transacciones</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">CO40</span>
+            <span class="chip chip-tx">CO01</span>
+            <span class="chip chip-doc">PP01 · Production Order</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">ORDER_STATUS</div>
+          <div class="label text-fg-40">CO40</div>
+        </div>
+
+        <div class="big-num text-6xl text-cyan mb-1">PP01</div>
+        <div class="label text-fg-60 mb-8">Production Order · Type</div>
+
+        <div class="space-y-2.5 font-mono text-xs">
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-green rounded-full"></span>
+            <span class="text-fg-80">CRTD · Created</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-green rounded-full"></span>
+            <span class="text-fg-80">REL · Released</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-fg-20 rounded-full"></span>
+            <span class="text-fg-60">PCNF · Partially confirmed</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-fg-20 rounded-full"></span>
+            <span class="text-fg-60">CNF · Confirmed</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-fg-20 rounded-full"></span>
+            <span class="text-fg-60">DLV · Delivered</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="w-2 h-2 bg-fg-20 rounded-full"></span>
+            <span class="text-fg-60">TECO · Tech. completed</span>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-line text-xs text-fg-60">
+          La orden permanece <span class="text-amber font-semibold">REL</span> mientras se ejecutan operaciones. Pasa a <span class="text-green font-semibold">CNF</span> al confirmar la última.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 05 — KEY STEP ============================ -->
+<section class="slide" data-step="5">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1" style="-webkit-text-stroke-color: rgba(176,122,0,0.55);">05</div>
+      <div class="relative">
+        <div class="label text-amber mono-h mb-6 reveal reveal-2">PHASE_02 · KEY_STEP · RECEPCIÓN_CFM</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-almacen">Almacén</span>
+          <span class="role" style="color:#C53030;">★ Paso clave</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-amber mb-6 reveal reveal-3">
+          El material<br>del cliente<br>entra al sistema.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          El cliente entrega físicamente su material. Almacén lo registra con movimiento <strong class="text-amber">501 E</strong> (GR sin OC, sales order stock). El material entra <strong class="text-crit">sin valor</strong> al inventario — es del cliente, solo se custodia.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Comando técnico</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">MIGO</span>
+            <span class="chip chip-mov">501 E</span>
+            <span class="chip chip-doc">Material doc · WE</span>
+            <span class="chip chip-key">Stock = E (SOS)</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7" style="border-color: rgba(176,122,0,0.55);">
+        <div class="corner-tl" style="border-color: #B07A00;"></div>
+        <div class="corner-br" style="border-color: #B07A00;"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-amber">★ KEY_TRANSACTION</div>
+          <div class="label text-fg-40">MIGO</div>
+        </div>
+
+        <div class="big-num text-7xl text-amber mb-1 tnum">501<span class="text-3xl ml-2">E</span></div>
+        <div class="label text-fg-60 mb-6">GR · Goods Receipt without PO</div>
+
+        <table class="data">
+          <tr><td class="key" style="color:#B07A00;">REF</td><td class="font-mono">Sales Order 5000123456</td></tr>
+          <tr><td class="key" style="color:#B07A00;">QTY</td><td class="font-mono">5.000 TON</td></tr>
+          <tr><td class="key" style="color:#B07A00;">VAL</td><td class="font-mono text-crit font-semibold">$ 0.00 — sin valor</td></tr>
+          <tr><td class="key" style="color:#B07A00;">STK</td><td class="font-mono">E · Sales Order Stock</td></tr>
+          <tr><td class="key" style="color:#B07A00;">OWN</td><td class="font-mono">Cliente</td></tr>
+        </table>
+
+        <div class="mt-7 -mx-7 -mb-7 px-7 py-4" style="background: rgba(176,122,0,0.08); border-top: 1px solid rgba(176,122,0,0.4);">
+          <div class="label text-amber mb-2">▲ ATENCIÓN</div>
+          <p class="text-xs text-fg-80 leading-relaxed">
+            El asiento contable es 0 — el material no aumenta tu inventario propio. La trazabilidad cuelga del Sales Order.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 06 ============================ -->
+<section class="slide" data-step="6">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">06</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_03 · CONSUMO</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-produccion">Producción</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Consumo<br>en producción.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Al confirmar operaciones, SAP registra el consumo del CFM con movimiento <strong class="text-cyan">261 E</strong> (GI a orden de producción contra stock especial E). Si la BOM lo tiene como <span class="text-amber font-semibold">backflush</span>, el consumo es automático.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Acciones</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">CO11N</span>
+            <span class="chip chip-tx">MIGO</span>
+            <span class="chip chip-mov">261 E</span>
+            <span class="chip chip-doc">Confirmación operación</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">CONSUMPTION</div>
+          <div class="label text-fg-40">CO11N</div>
+        </div>
+
+        <div class="big-num text-7xl text-cyan mb-1 tnum">261<span class="text-3xl ml-2">E</span></div>
+        <div class="label text-fg-60 mb-6">GI · Goods Issue to order</div>
+
+        <div class="space-y-3 mb-6 font-mono text-xs">
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">ORDER</span>
+            <span class="text-fg">100012345</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">COMPONENT</span>
+            <span class="text-amber font-semibold">CFM-001</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">QTY</span>
+            <span class="text-fg">5.000 TON</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">BACKFLUSH</span>
+            <span class="text-green font-semibold">✓ ON</span>
+          </div>
+        </div>
+
+        <div class="border-t border-line pt-4">
+          <div class="label text-fg-60 mb-2">Resultado</div>
+          <div class="text-sm text-fg-80">Stock SOS del CFM baja a 0. Costo cargado a orden = 0 (CFM sin valor).</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 07 ============================ -->
+<section class="slide" data-step="7">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">07</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_03 · RECEPCIÓN_PT</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-almacen">Almacén</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          PT al stock<br>del pedido.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Terminada la producción, el PT entra al <span class="text-cyan font-semibold">sales order stock</span> con movimiento <strong class="text-cyan">101 E</strong>. Queda reservado para ese SO — no puede usarse para otro cliente.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Movimiento</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">MIGO</span>
+            <span class="chip chip-mov">101 E</span>
+            <span class="chip chip-doc">Material doc · WE</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">GR_PT</div>
+          <div class="label text-fg-40">MIGO</div>
+        </div>
+
+        <div class="big-num text-7xl text-cyan mb-1 tnum">101<span class="text-3xl ml-2">E</span></div>
+        <div class="label text-fg-60 mb-6">GR · From production order</div>
+
+        <table class="data">
+          <tr><td class="key" style="color:#0084A8;">ORDER</td><td class="font-mono">100012345 · PP01</td></tr>
+          <tr><td class="key" style="color:#0084A8;">MATERIAL</td><td class="font-mono">PT-CUSTOM-001</td></tr>
+          <tr><td class="key" style="color:#0084A8;">QTY</td><td class="font-mono">5.000 TON</td></tr>
+          <tr><td class="key" style="color:#0084A8;">STK</td><td class="font-mono">E · Reservado al SO</td></tr>
+          <tr><td class="key" style="color:#0084A8;">PLANT</td><td class="font-mono">P001 · Apodaca</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 08 ============================ -->
+<section class="slide" data-step="8">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">08</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_04 · LOGÍSTICA_OUTBOUND</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-ventas">Ventas</span>
+          <span class="role role-almacen">Almacén</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Creación<br>de entrega.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Se genera la <strong class="text-cyan">entrega outbound</strong> (tipo LF) referenciando el SO. SAP propone la cantidad disponible en SOS. Se ejecuta picking y se confirma la transferencia al muelle de embarque.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Documento</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">VL01N</span>
+            <span class="chip chip-doc">LF · Outbound Delivery</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">DELIVERY</div>
+          <div class="label text-fg-40">VL01N</div>
+        </div>
+
+        <div class="big-num text-6xl text-cyan mb-1">LF</div>
+        <div class="label text-fg-60 mb-6">Outbound Delivery · Type</div>
+
+        <div class="space-y-2.5 font-mono text-xs">
+          <div class="flex items-center gap-3">
+            <span class="text-green font-semibold">[✓]</span>
+            <span class="text-fg-80">Delivery created</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-green font-semibold">[✓]</span>
+            <span class="text-fg-80">Picking confirmed</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-green font-semibold">[✓]</span>
+            <span class="text-fg-80">Loading complete</span>
+          </div>
+          <div class="flex items-center gap-3">
+            <span class="text-amber font-semibold">[ ]</span>
+            <span class="text-fg-60">Goods Issue (PGI) → step 09</span>
+          </div>
+        </div>
+
+        <div class="mt-6 pt-6 border-t border-line text-xs text-fg-60">
+          Hasta este punto, el PT sigue en tu inventario (SOS). Solo el PGI descuenta.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 09 ============================ -->
+<section class="slide" data-step="9">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">09</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_04 · SALIDA_MERCANCÍA</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-almacen">Almacén</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Post Goods<br>Issue.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Al embarcar, se posta el <strong class="text-cyan">Goods Issue</strong> con movimiento <strong class="text-cyan">601 E</strong>. SAP descuenta el PT del sales order stock y dispara reconocimiento de costo en <strong class="text-amber">CO-PA</strong>.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Salida</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">VL02N</span>
+            <span class="chip chip-mov">601 E</span>
+            <span class="chip chip-doc">Material doc · WL</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">PGI</div>
+          <div class="label text-fg-40">VL02N</div>
+        </div>
+
+        <div class="big-num text-7xl text-cyan mb-1 tnum">601<span class="text-3xl ml-2">E</span></div>
+        <div class="label text-fg-60 mb-6">GI · Outbound delivery</div>
+
+        <table class="data">
+          <tr><td class="key" style="color:#0084A8;">DELIVERY</td><td class="font-mono">80012345</td></tr>
+          <tr><td class="key" style="color:#0084A8;">PT</td><td class="font-mono">5.000 TON</td></tr>
+          <tr><td class="key" style="color:#0084A8;">STK</td><td class="font-mono text-crit font-semibold">SOS → 0 (vaciado)</td></tr>
+          <tr><td class="key" style="color:#0084A8;">COPA</td><td class="font-mono text-green font-semibold">✓ Costo reconocido</td></tr>
+        </table>
+
+        <div class="mt-6 pt-6 border-t border-line">
+          <div class="label text-green mb-2">● PT_ENTREGADO</div>
+          <div class="text-xs text-fg-60">A partir de aquí, la titularidad del PT pasa al cliente.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 10 ============================ -->
+<section class="slide" data-step="10">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1">10</div>
+      <div class="relative">
+        <div class="label text-cyan mono-h mb-6 reveal reveal-2">PHASE_04 · CIERRE · CFDI</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-finanzas">Finanzas</span>
+          <span class="role role-ventas">Ventas</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Facturación<br>del servicio.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Factura <strong class="text-cyan">F2</strong> contra la entrega. <strong class="text-crit">Solo se factura el servicio + insumos propios</strong> — el material del cliente <span class="text-amber font-semibold">jamás</span> entra al monto. CFDI timbrado ante SAT, cuenta del SO liberada.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Cierre</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">VF01</span>
+            <span class="chip chip-doc">F2 · Invoice</span>
+            <span class="chip chip-key">CFDI · UUID SAT</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-6">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">INVOICE</div>
+          <div class="label text-fg-40">VF01</div>
+        </div>
+
+        <div class="space-y-2.5 font-mono text-xs mb-6">
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">Servicio de maquila</span>
+            <span class="text-fg">$ 80,000.00</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">Insumos propios</span>
+            <span class="text-fg">$ 10,000.00</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2 text-crit">
+            <span>CFM del cliente</span>
+            <span class="line-through">$ 0.00</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">Subtotal</span>
+            <span class="text-fg">$ 90,000.00</span>
+          </div>
+          <div class="flex justify-between border-b border-line-light pb-2">
+            <span class="text-fg-60">IVA 16%</span>
+            <span class="text-fg">$ 14,400.00</span>
+          </div>
+        </div>
+
+        <div class="-mx-7 -mb-7 px-7 py-4" style="background: rgba(0,132,168,0.08); border-top: 1px solid rgba(0,132,168,0.4);">
+          <div class="flex justify-between items-baseline">
+            <span class="label text-cyan">TOTAL · MXN</span>
+            <span class="big-num text-3xl text-cyan">$104,400</span>
+          </div>
+          <div class="mt-2 label text-green">● CFDI_TIMBRADO · UUID OK</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ SLIDE 11 — OPCIONAL ============================ -->
+<section class="slide" data-step="11">
+  <div class="grid grid-cols-12 gap-10 items-start">
+
+    <div class="col-span-12 lg:col-span-7 relative">
+      <div class="chapter-num absolute -top-12 -left-2 reveal reveal-1" style="-webkit-text-stroke-color: rgba(138,146,160,0.4);">+</div>
+      <div class="relative">
+        <div class="label text-fg-40 mono-h mb-6 reveal reveal-2">OPCIONAL · DEVOLUCIÓN_SOBRANTE</div>
+
+        <div class="flex gap-2 mb-6 reveal reveal-3">
+          <span class="role role-almacen">Almacén</span>
+          <span class="role role-cliente">Cliente</span>
+        </div>
+
+        <h2 class="font-display-tight text-5xl lg:text-7xl text-fg mb-6 reveal reveal-3">
+          Devolución<br>del sobrante.
+        </h2>
+
+        <p class="text-fg-80 text-lg leading-relaxed max-w-prose mb-8 reveal reveal-4">
+          Si quedó CFM sin consumir, se devuelve al cliente con movimiento <strong class="text-cyan">502 E</strong> (reversa del 501 E). Puede acompañarse de remisión interna o nota de cargo cero.
+        </p>
+
+        <div class="reveal reveal-5">
+          <div class="label text-fg-60 mb-3">Cierre técnico</div>
+          <div class="flex flex-wrap gap-2">
+            <span class="chip chip-tx">MIGO</span>
+            <span class="chip chip-mov">502 E</span>
+            <span class="chip chip-doc">Reversa del 501 E</span>
+          </div>
+        </div>
+
+        <!-- Final block: Recap -->
+        <div class="mt-12 hud p-7 reveal reveal-6">
+          <div class="corner-tl"></div><div class="corner-br"></div>
+          <div class="flex justify-between items-baseline mb-4">
+            <div class="label text-green">● PROCESO_COMPLETO</div>
+            <div class="label text-fg-40">END_OF_MANUAL</div>
+          </div>
+          <h3 class="font-display-tight text-3xl text-fg mb-3">
+            Has cubierto el flujo end-to-end.
+          </h3>
+          <p class="text-sm text-fg-80 leading-relaxed mb-5">
+            Pre-venta → MRP → Producción → Recepción CFM → Consumo → PT → Entrega → PGI → Facturación → Cierre.
+          </p>
+          <div class="space-y-2 text-xs font-mono text-fg-60">
+            <div class="flex items-baseline gap-3"><span class="text-cyan w-24">Soporte TI</span><span>ti@gilm.com.mx</span></div>
+            <div class="flex items-baseline gap-3"><span class="text-cyan w-24">Key User SD</span><span>Consulta para casos específicos</span></div>
+            <div class="flex items-baseline gap-3"><span class="text-cyan w-24">Manual</span><span>Portal interno · v.1.0</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-span-12 lg:col-span-5 reveal reveal-7">
+      <div class="hud p-7">
+        <div class="corner-tl"></div><div class="corner-br"></div>
+        <div class="flex justify-between items-baseline mb-6">
+          <div class="label text-cyan">SYSTEM_DIGEST</div>
+          <div class="label text-fg-40">FINAL_STATE</div>
+        </div>
+
+        <table class="data">
+          <tr><td class="key" style="color:#1F8F5C;">SO</td><td class="font-mono text-green font-semibold">DLV · Delivered</td></tr>
+          <tr><td class="key" style="color:#1F8F5C;">PP01</td><td class="font-mono text-green font-semibold">TECO · Completed</td></tr>
+          <tr><td class="key" style="color:#1F8F5C;">LF</td><td class="font-mono text-green font-semibold">GI Posted</td></tr>
+          <tr><td class="key" style="color:#1F8F5C;">F2</td><td class="font-mono text-green font-semibold">Posted · CFDI OK</td></tr>
+          <tr><td class="key" style="color:#1F8F5C;">SOS</td><td class="font-mono text-green font-semibold">Vaciado · 0</td></tr>
+        </table>
+
+        <div class="mt-6 pt-6 border-t border-line text-xs text-fg-60 leading-relaxed">
+          El Sales Order puede cerrarse formalmente cuando todas sus posiciones estén entregadas, facturadas y cobradas. Mientras la AR esté abierta, el SO permanece <span class="text-amber font-semibold">en seguimiento</span>.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============================ FOOTER ============================ -->
+<footer class="border-t border-line bg-bg/85 backdrop-blur sticky bottom-0 z-20">
+  <div class="max-w-[1400px] mx-auto px-8 py-4 flex items-center justify-between gap-4">
+    <button id="prev-btn" class="btn btn-sec">
+      <span>←</span>
+      <span>PREV</span>
+    </button>
+    <div class="hidden md:flex items-center gap-3 text-fg-60">
+      <span class="label">NAV</span>
+      <kbd>←</kbd><kbd>→</kbd>
+      <span class="label ml-3">FULL</span>
+      <kbd>F</kbd>
+    </div>
+    <button id="next-btn" class="btn btn-prim">
+      <span>NEXT</span>
+      <span>→</span>
+    </button>
+  </div>
+</footer>
+
+<script>
+(function() {
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  const stepper = document.getElementById('stepper');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const currentStepEl = document.getElementById('current-step');
+  const totalStepsEl = document.getElementById('total-steps');
+  let current = 0;
+
+  // Build stepper as bars + numbers
+  let html = '';
+  for (let i = 0; i < total; i++) {
+    html += `
+      <button data-go="${i}" class="step-seg flex-1 flex flex-col gap-1.5 group" title="Step ${i+1}">
+        <span class="step-bar block"></span>
+        <span class="step-num">${String(i+1).padStart(2,'0')}</span>
+      </button>
+    `;
+  }
+  stepper.innerHTML = html;
+  const segs = Array.from(stepper.querySelectorAll('.step-seg'));
+  totalStepsEl.textContent = String(total).padStart(2,'0');
+
+  function go(i) {
+    if (i < 0 || i >= total) return;
+    slides[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    currentStepEl.textContent = String(current + 1).padStart(2,'0');
+
+    segs.forEach((s, idx) => {
+      s.classList.remove('active','completed');
+      if (idx < current) s.classList.add('completed');
+      else if (idx === current) s.classList.add('active');
+    });
+
+    prevBtn.disabled = (current === 0);
+    nextBtn.disabled = (current === total - 1);
+    nextBtn.innerHTML = (current === total - 1)
+      ? '<span>END</span><span>✓</span>'
+      : '<span>NEXT</span><span>→</span>';
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  prevBtn.addEventListener('click', () => go(current - 1));
+  nextBtn.addEventListener('click', () => go(current + 1));
+  segs.forEach((s, i) => s.addEventListener('click', () => go(i)));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowLeft')  go(current - 1);
+    if (e.key === 'ArrowRight') go(current + 1);
+    if (e.key.toLowerCase() === 'f') {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  go(0);
+})();
+</script>
+
+</body>
+</html>
