@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Proyecto Maquila MTO · KMAT · Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080b12; --panel:rgba(255,255,255,.04); --line:rgba(255,255,255,.09); --line2:rgba(255,255,255,.16);
+    --ink:#eef2f8; --ink-soft:#aab4c5; --mute:#6c7789;
+    --red:#d33b3b; --gold:#e7b53d; --orange:#e2671f; --coral:#d97757; --cyan:#43d1c9; --blue:#3b9bff; --green:#48d28a; --violet:#8b7bff;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--bg);color:var(--ink);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  a{color:inherit;text-decoration:none}
+  .bg{position:fixed;inset:0;z-index:-2;background:
+    radial-gradient(1100px 700px at 85% -10%,rgba(59,155,255,.10),transparent 60%),
+    radial-gradient(900px 700px at -5% 10%,rgba(226,103,31,.10),transparent 55%),
+    radial-gradient(900px 800px at 50% 120%,rgba(67,209,201,.07),transparent 55%),var(--bg)}
+  .grid-ov{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+    background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:60px 60px;mask-image:radial-gradient(circle at 50% 20%,#000,transparent 75%)}
+  .wrap{max-width:1240px;margin:0 auto;padding:0 6vw}
+
+  header{display:flex;align-items:center;justify-content:space-between;padding:22px 6vw;position:sticky;top:0;z-index:30;
+    backdrop-filter:blur(9px);background:linear-gradient(180deg,rgba(8,11,18,.75),transparent)}
+  .brand{display:flex;align-items:center;gap:12px;font-weight:700}
+  .brand img{width:34px;height:34px;filter:drop-shadow(0 0 10px rgba(211,59,59,.5))}
+  .brand small{display:block;font-size:10px;letter-spacing:.26em;color:var(--mute);text-transform:uppercase;font-weight:600}
+  header .cta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--cyan);border:1px solid var(--line2);padding:9px 16px;border-radius:100px;transition:.3s}
+  header .cta:hover{background:rgba(67,209,201,.1);border-color:var(--cyan)}
+
+  .hero{padding:70px 0 30px;text-align:left}
+  .hero .ey{display:inline-flex;align-items:center;gap:10px;font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:18px}
+  .hero .ey::before{content:"";width:26px;height:1px;background:var(--cyan)}
+  .hero h1{font-family:'Space Grotesk',sans-serif;font-size:clamp(36px,6.5vw,76px);font-weight:700;letter-spacing:-.03em;line-height:1}
+  .hero h1 .g{background:linear-gradient(100deg,var(--cyan),var(--blue) 45%,var(--violet));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero h1 .gw{background:linear-gradient(100deg,var(--gold),var(--orange));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p{color:var(--ink-soft);font-size:clamp(15px,2vw,19px);max-width:680px;margin-top:20px;line-height:1.6}
+  .stats{display:flex;flex-wrap:wrap;gap:34px;margin-top:36px}
+  .stats .s .v{font-family:'Space Grotesk',sans-serif;font-size:26px;font-weight:700}
+  .stats .s .k{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--mute);margin-top:2px}
+
+  .group{padding:40px 0 8px}
+  .group h2{font-family:'Space Grotesk',sans-serif;font-size:14px;font-weight:600;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-soft);display:flex;align-items:center;gap:12px;margin-bottom:22px}
+  .group h2 .ln{flex:1;height:1px;background:var(--line)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:20px}
+  .card{position:relative;display:flex;flex-direction:column;padding:26px;border:1px solid var(--line);border-radius:18px;overflow:hidden;
+    background:linear-gradient(160deg,rgba(255,255,255,.045),rgba(255,255,255,.01));transition:.4s cubic-bezier(.2,.7,.2,1);min-height:188px}
+  .card::before{content:"";position:absolute;inset:0;border-radius:18px;padding:1px;background:linear-gradient(140deg,var(--c,var(--cyan)),transparent 50%);
+    -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:.4s}
+  .card:hover{transform:translateY(-7px);border-color:var(--line2);box-shadow:0 28px 56px -28px rgba(0,0,0,.85)}
+  .card:hover::before{opacity:1}
+  .card .top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:16px}
+  .card .ico{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-size:23px;background:rgba(255,255,255,.05);border:1px solid var(--line)}
+  .card .num{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--mute)}
+  .card h3{font-family:'Space Grotesk',sans-serif;font-size:18px;font-weight:600;letter-spacing:-.01em;margin-bottom:8px}
+  .card p{color:var(--ink-soft);font-size:13.5px;line-height:1.55;flex:1}
+  .card .foot{display:flex;align-items:center;justify-content:space-between;margin-top:18px}
+  .card .open{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--c,var(--cyan));font-weight:500}
+  .card .open .a{transition:.3s}.card:hover .open .a{transform:translateX(4px)}
+  .badge{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+  .badge.ok{background:rgba(72,210,138,.15);color:var(--green);border:1px solid rgba(72,210,138,.4)}
+  .badge.warn{background:rgba(231,181,61,.15);color:var(--gold);border:1px solid rgba(231,181,61,.4)}
+  .badge.file{background:rgba(59,155,255,.13);color:var(--blue);border:1px solid rgba(59,155,255,.35)}
+  .ftype{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--mute);border:1px solid var(--line);padding:2px 7px;border-radius:5px}
+
+  footer{border-top:1px solid var(--line);margin-top:60px;padding:36px 6vw 60px;display:flex;flex-wrap:wrap;gap:18px;justify-content:space-between;align-items:center}
+  footer .l{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--mute);line-height:1.7}
+  footer img{width:30px;height:30px;filter:drop-shadow(0 0 8px rgba(211,59,59,.4))}
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .7s cubic-bezier(.2,.7,.2,1),transform .7s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<div class="bg"></div><div class="grid-ov"></div>
+
+<header>
+  <div class="brand"><img src="assets/aliacer-icono.png" alt="Aliacer"><div>Maquila MTO · KMAT<small>Aliacer · Perfiles LM</small></div></div>
+  <a class="cta" href="presentacion-proyecto-maquila-kmat.html">Ver presentación ↗</a>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="ey reveal in">Portal del proyecto · SAP S/4HANA · QAS</div>
+    <h1 class="reveal in">Maquila <span class="g">MTO</span> · <span class="gw">KMAT</span></h1>
+    <p class="reveal in">Centro de acceso a todos los entregables y artefactos de la prueba UAT del proceso de maquila bajo pedido con materiales configurables. Haz clic en cada tarjeta para abrir el documento.</p>
+    <div class="stats reveal in">
+      <div class="s"><div class="v" style="color:var(--cyan)">11</div><div class="k">Puntos</div></div>
+      <div class="s"><div class="v" style="color:var(--gold)">2</div><div class="k">Pedidos creados</div></div>
+      <div class="s"><div class="v" style="color:var(--green)">Sector 00</div><div class="k">Validado</div></div>
+      <div class="s"><div class="v" style="color:var(--gold)">Sector 10</div><div class="k">Pendiente consultor</div></div>
+    </div>
+  </section>
+
+  <!-- GRUPO A -->
+  <section class="group">
+    <h2>Documentación del proceso <span class="ln"></span></h2>
+    <div class="cards">
+      <a class="card reveal" style="--c:var(--cyan)" href="diagramas/maquila-mto-kmat-presentacion.html" target="_blank">
+        <div class="top"><div class="ico">📊</div><span class="num">01</span></div>
+        <h3>Presentación Maquila MTO · KMAT</h3>
+        <p>Diagrama y narrativa del proceso de maquila con materiales configurables en SAP.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">HTML</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--blue)" href="diagramas/video-maquila/video-maquila-kmat.mp4" target="_blank">
+        <div class="top"><div class="ico">🎬</div><span class="num">02</span></div>
+        <h3>Video narrado</h3>
+        <p>Recorrido visual y narrado del flujo de maquila KMAT, de inicio a fin.</p>
+        <div class="foot"><span class="open">Reproducir <span class="a">→</span></span><span class="ftype">MP4</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--gold)" href="manual-maquila-kmat/manual-maquila-kmat.pdf" target="_blank">
+        <div class="top"><div class="ico">📕</div><span class="num">03</span></div>
+        <h3>Manual de usuario</h3>
+        <p>Guía paso a paso para crear pedidos de maquila con materiales configurables.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">PDF</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--violet)" href="manual-maquila-kmat/script-pruebas-maquila-kmat.docx" target="_blank">
+        <div class="top"><div class="ico">🧪</div><span class="num">04</span></div>
+        <h3>Script de pruebas (UAT)</h3>
+        <p>Casos de prueba y datos de entrada para la validación funcional en SAP.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">DOCX</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- GRUPO B -->
+  <section class="group">
+    <h2>Ejecución y resultados UAT <span class="ln"></span></h2>
+    <div class="cards">
+      <a class="card reveal" style="--c:var(--green)" href="resultados-pruebas-maquila-kmat.html" target="_blank">
+        <div class="top"><div class="ico">📈</div><span class="num">05</span></div>
+        <h3>Documento de resultados de prueba</h3>
+        <p>Reporte UAT con resumen ejecutivo, dictamen y la evidencia de la ejecución.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="badge ok">VALIDADO</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--cyan)" href="log-documentos-creados.csv" target="_blank">
+        <div class="top"><div class="ico">🧾</div><span class="num">06</span></div>
+        <h3>Log de documentos creados</h3>
+        <p>Registro de los pedidos generados: 4010030435 y 4010030436 (LM00/50/00).</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">CSV</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--red)" href="log-errores.csv" target="_blank">
+        <div class="top"><div class="ico">🐞</div><span class="num">07</span></div>
+        <h3>Log de errores</h3>
+        <p>Incidencias detectadas y su resolución, incluida la re-ejecución del Sector 10.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">CSV</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--gold)" href="resultados-pruebas-maquila-kmat.html" target="_blank">
+        <div class="top"><div class="ico">🔁</div><span class="num">08</span></div>
+        <h3>Re-ejecución de pruebas</h3>
+        <p>Sector 00: OK. Sector 10: persiste el error de esquema de cálculo (a corrección).</p>
+        <div class="foot"><span class="open">Ver detalle <span class="a">→</span></span><span class="badge warn">SECTOR 10 PEND.</span></div>
+      </a>
+    </div>
+  </section>
+
+  <!-- GRUPO C -->
+  <section class="group">
+    <h2>Comunicación y cierre <span class="ln"></span></h2>
+    <div class="cards">
+      <a class="card reveal" style="--c:var(--gold)" href="instrucciones-consultor-funcional-maquila-kmat.eml" target="_blank">
+        <div class="top"><div class="ico">🛠️</div><span class="num">09</span></div>
+        <h3>Instrucciones al consultor funcional</h3>
+        <p>Correo con la incidencia del Sector 10 y las acciones a configurar (BP, OVKK, MM02).</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">EML</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--blue)" href="notificacion-usuarios-clave-maquila-kmat.eml" target="_blank">
+        <div class="top"><div class="ico">📣</div><span class="num">10</span></div>
+        <h3>Notificación a usuarios clave</h3>
+        <p>Correo con los resultados validados (Sector 00) y la convocatoria al análisis.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="ftype">EML</span></div>
+      </a>
+      <a class="card reveal" style="--c:var(--coral)" href="acta-visto-bueno-maquila-kmat.html" target="_blank">
+        <div class="top"><div class="ico">✍️</div><span class="num">11</span></div>
+        <h3>Visto bueno de usuarios finales</h3>
+        <p>Acta de aceptación · dictamen: aprobado con observaciones · lista para firma.</p>
+        <div class="foot"><span class="open">Abrir <span class="a">→</span></span><span class="badge ok">ACTA</span></div>
+      </a>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="l"><img src="assets/aliacer-icono.png" alt="Aliacer"><div>PROYECTO IA · MAQUILA MTO · KMAT<br>Perfiles LM — División Acero · Grupo Gilm · SAP S/4HANA (QAS 400)</div></div>
+  <div class="l">Pedidos de prueba: 4010030435 · 4010030436</div>
+</footer>
+
+<script>
+  const io=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.1});
+  document.querySelectorAll('.reveal:not(.in)').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
