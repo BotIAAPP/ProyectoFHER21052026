@@ -1,0 +1,3 @@
+﻿Num,Caso,Transaccion,Documento,Tipo,DatosClave,ValorNeto,Estado,Fecha
+1,TC-01,VA01,4010030435,Pedido de Maquila,"ZMAQ · LM00/50/00 · Solicitante GILM000002 (INDALUM) · Material 43000005 (CFG DOBLEZ MAQUILA) × 50 KG · Nº parte 95432 CODO 3 1/2"" A 90º · Ref. Prueba Claude · Entrega 22.05.2026",825.00 MXN,GRABADO,2026-05-22
+2,TC-01,VA01,4010030436,Pedido de Maquila,"Misma configuración que el documento #1; ejecutado de forma automática leyendo el Script de Pruebas (data-driven desde el .docx).",825.00 MXN,GRABADO,2026-05-22

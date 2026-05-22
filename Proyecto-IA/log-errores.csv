@@ -1,0 +1,6 @@
+﻿Num,CasoPaso,Transaccion,MensajeSAP,Severidad,CausaResolucion
+1,TC-01 paso 2,VA01,"Para organización de ventas LM10, no se permite el canal de distribución 50",ERROR,"Organización de ventas LM10 incorrecta para el canal. Resuelto: se usó LM00."
+2,TC-01 paso 3,VA01,"No se ha podido determinar un área de ventas (al cancelar el popup ""Áreas de ventas para cliente"").",ERROR,"El cliente no quedaba ligado a un área al dejar el Sector vacío. Resuelto: indicar Sector 00 en la pantalla inicial (LM00/50/00) o presionar Enter para la determinación automática."
+3,TC-01 variante Sector 10,VA01,"No fue posible determinar esquema de cálculo",ERROR,"El área LM00/50/10 no tiene esquema de cálculo ni interlocutor (ship-to) para el cliente GILM000002. Acción: usar Sector 00; derivar a consultor funcional si se requiere operar el Sector 10."
+4,TC-01 paso 5,VA01,"El material 43000005 no es susceptible de configuración (motivo: 2)",INFORMATIVO,"Aviso del sistema; no bloquea. La configuración por número de parte deriva la especificación (ancho, calibre, acabado, ángulo, longitud, peso)."
+5,TC-01 paso 6,VA01,"Control de disponibilidad: ""Entrega única en fe.preferente: No es posible"" (cantidad confirmada 0.000)",ADVERTENCIA,"Sin stock disponible (maquila Make-to-Order contra pedido). Acción: continuar y grabar; el abastecimiento se planifica por pedido."

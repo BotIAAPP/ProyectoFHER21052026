@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Resultados de Pruebas UAT · Maquila MTO · KMAT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#16202e; --ink-soft:#48576b; --mute:#7d8a9c; --line:#e3e8ef; --line2:#cfd7e2;
+    --paper:#ffffff; --panel:#f6f8fb; --red:#c62828; --red-soft:#fdecec;
+    --green:#1f8a4c; --green-soft:#e8f6ee; --amber:#b97608; --amber-soft:#fbf2df;
+    --blue:#1f6fb2; --blue-soft:#e9f2fb; --accent:#c62828;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:#eef1f6;line-height:1.5}
+  .mono{font-family:'JetBrains Mono',ui-monospace,monospace}
+  .page{max-width:1080px;margin:28px auto;background:var(--paper);box-shadow:0 10px 40px -18px rgba(20,32,46,.35);border-radius:14px;overflow:hidden}
+  /* header */
+  .head{padding:34px 44px;border-bottom:3px solid var(--accent);display:flex;align-items:center;gap:20px;background:linear-gradient(180deg,#fbfcfe,#fff)}
+  .head img{width:58px;height:58px;flex:0 0 auto}
+  .head .t .k{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.28em;text-transform:uppercase;color:var(--mute);font-weight:600}
+  .head .t h1{font-size:25px;font-weight:800;letter-spacing:-.02em;margin-top:3px}
+  .head .t h1 b{color:var(--accent)}
+  .head .badge{margin-left:auto;text-align:right}
+  .head .badge .res{display:inline-block;padding:7px 14px;border-radius:8px;font-weight:700;font-size:13px;background:var(--amber-soft);color:var(--amber);border:1px solid #e6cf94}
+  .head .badge small{display:block;color:var(--mute);font-size:11px;margin-top:6px;font-family:'JetBrains Mono',monospace}
+  section{padding:26px 44px}
+  h2{font-size:15px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;gap:10px}
+  h2::before{content:"";width:14px;height:14px;border-radius:3px;background:var(--accent)}
+  /* meta */
+  .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:0 40px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  .meta div{display:flex;justify-content:space-between;gap:16px;padding:9px 16px;border-bottom:1px solid var(--line);font-size:13.5px}
+  .meta div:nth-last-child(-n+2){border-bottom:none}
+  .meta div span:first-child{color:var(--mute);font-weight:500}
+  .meta div span:last-child{font-weight:600;text-align:right}
+  /* summary cards */
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+  .card{border:1px solid var(--line);border-radius:10px;padding:16px 18px;background:var(--panel)}
+  .card .v{font-size:30px;font-weight:800;letter-spacing:-.02em}
+  .card .l{font-size:11.5px;color:var(--mute);font-family:'JetBrains Mono',monospace;text-transform:uppercase;letter-spacing:.1em;margin-top:2px}
+  .card.ok .v{color:var(--green)} .card.err .v{color:var(--red)} .card.doc .v{color:var(--blue)}
+  /* tables */
+  table{width:100%;border-collapse:collapse;font-size:13px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  thead th{background:#f0f3f8;text-align:left;padding:11px 12px;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-soft);border-bottom:1px solid var(--line2);font-weight:700}
+  tbody td{padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:nth-child(even){background:#fafbfd}
+  .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11px;font-weight:700;font-family:'JetBrains Mono',monospace;white-space:nowrap}
+  .pill.ok{background:var(--green-soft);color:var(--green)}
+  .pill.err{background:var(--red-soft);color:var(--red)}
+  .pill.warn{background:var(--amber-soft);color:var(--amber)}
+  .pill.info{background:var(--blue-soft);color:var(--blue)}
+  .doc-no{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent)}
+  .small{font-size:12px;color:var(--ink-soft)}
+  code{font-family:'JetBrains Mono',monospace;background:#f0f3f8;padding:1px 5px;border-radius:4px;font-size:12px}
+  .note{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:8px;padding:14px 18px;font-size:13.5px;color:var(--ink-soft)}
+  .sign{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:10px}
+  .sign div{border-top:1px solid var(--line2);padding-top:8px;font-size:12px;color:var(--mute);text-align:center}
+  footer{padding:20px 44px 34px;color:var(--mute);font-size:11.5px;font-family:'JetBrains Mono',monospace;border-top:1px solid var(--line)}
+  @media print{ body{background:#fff} .page{box-shadow:none;margin:0;max-width:none;border-radius:0} section{break-inside:avoid} }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="head">
+    <img src="assets/aliacer-icono.png" alt="Aliacer">
+    <div class="t">
+      <div class="k">Aliacer · Perfiles LM · UAT</div>
+      <h1>Resultados de Pruebas · <b>Maquila MTO · KMAT</b></h1>
+    </div>
+    <div class="badge">
+      <span class="res">APROBADO CON OBSERVACIONES</span>
+      <small>2026-05-22</small>
+    </div>
+  </div>
+
+  <section>
+    <h2>Datos de la prueba</h2>
+    <div class="meta">
+      <div><span>Proyecto</span><span>Maquila MTO con materiales configurables (KMAT)</span></div>
+      <div><span>Sistema</span><span>SAP S/4HANA · QAS · Mandante 400</span></div>
+      <div><span>Módulo(s)</span><span>SD · PP · MM</span></div>
+      <div><span>Transacción probada</span><span class="mono">VA01</span></div>
+      <div><span>Fuente de datos</span><span>Script de Pruebas UAT (TC-01)</span></div>
+      <div><span>Fecha de ejecución</span><span>2026-05-22</span></div>
+      <div><span>Ejecutó</span><span>Claude (agente IA) · usuario fhcastaneda</span></div>
+      <div><span>Documento</span><span>Resultados de prueba v1.0</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Resumen ejecutivo</h2>
+    <div class="cards">
+      <div class="card"><div class="v">1</div><div class="l">Casos ejecutados</div></div>
+      <div class="card doc"><div class="v">2</div><div class="l">Documentos creados</div></div>
+      <div class="card err"><div class="v">3</div><div class="l">Incidencias</div></div>
+      <div class="card ok"><div class="v">100%</div><div class="l">Pedidos grabados</div></div>
+    </div>
+    <p class="small" style="margin-top:14px">El caso <b>TC-01 (VA01 · Crear pedido de maquila con material configurable)</b> se ejecutó leyendo los datos del Script de Pruebas. Se crearon <b>2 pedidos</b> en QAS. Las 3 incidencias se resolvieron durante la corrida; quedan <b>observaciones de datos maestros</b> para variantes de Sector (ver log de errores).</p>
+  </section>
+
+  <section>
+    <h2>Log de documentos creados</h2>
+    <table>
+      <thead><tr><th>#</th><th>Caso</th><th>Trans.</th><th>Documento</th><th>Tipo</th><th>Datos clave</th><th>Valor neto</th><th>Estado</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>TC-01</td><td class="mono">VA01</td>
+          <td class="doc-no">4010030435</td>
+          <td>Pedido de Maquila</td>
+          <td class="small">ZMAQ · LM00/50/00 · Solicitante GILM000002 (INDALUM) · Material 43000005 (CFG DOBLEZ MAQUILA) × 50 KG · Nº parte <code>95432 CODO 3 1/2" A 90º</code> · Ref. "Prueba Claude" · Entrega 22.05.2026</td>
+          <td class="mono">825.00 MXN</td>
+          <td><span class="pill ok">GRABADO</span></td>
+        </tr>
+        <tr>
+          <td>2</td><td>TC-01</td><td class="mono">VA01</td>
+          <td class="doc-no">4010030436</td>
+          <td>Pedido de Maquila</td>
+          <td class="small">Misma configuración que el #1, <b>ejecutado de forma automática leyendo el Script de Pruebas</b> (data-driven desde el .docx).</td>
+          <td class="mono">825.00 MXN</td>
+          <td><span class="pill ok">GRABADO</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Log de errores e incidencias</h2>
+    <table>
+      <thead><tr><th>#</th><th>Caso / Paso</th><th>Trans.</th><th>Mensaje SAP</th><th>Severidad</th><th>Causa y resolución</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>1</td><td>TC-01 · paso 2</td><td class="mono">VA01</td>
+          <td class="small">"Para organización de ventas LM10, no se permite el canal de distribución 50"</td>
+          <td><span class="pill err">ERROR</span></td>
+          <td class="small">Organización de ventas <code>LM10</code> incorrecta para el canal. <b>Resuelto:</b> se usó <code>LM00</code>.</td>
+        </tr>
+        <tr>
+          <td>2</td><td>TC-01 · paso 3</td><td class="mono">VA01</td>
+          <td class="small">"No se ha podido determinar un área de ventas" (al cancelar el popup "Áreas de ventas para cliente")</td>
+          <td><span class="pill err">ERROR</span></td>
+          <td class="small">El cliente no quedaba ligado a un área al dejar el Sector vacío. <b>Resuelto:</b> indicar <code>Sector 00</code> en la pantalla inicial (área LM00/50/00) o presionar Enter para la determinación automática.</td>
+        </tr>
+        <tr>
+          <td>3</td><td>TC-01 · variante Sector 10</td><td class="mono">VA01</td>
+          <td class="small">"No fue posible determinar esquema de cálculo"</td>
+          <td><span class="pill err">ERROR</span></td>
+          <td class="small">El área <code>LM00/50/10</code> no tiene esquema de cálculo ni interlocutor (ship-to) para el cliente <code>GILM000002</code>. <b>Acción:</b> usar Sector 00; <b>derivar a consultor funcional</b> si se requiere operar el Sector 10.</td>
+        </tr>
+        <tr>
+          <td>4</td><td>TC-01 · paso 5</td><td class="mono">VA01</td>
+          <td class="small">"El material 43000005 no es susceptible de configuración (motivo: 2)"</td>
+          <td><span class="pill info">INFORMATIVO</span></td>
+          <td class="small">Aviso del sistema; no bloquea. La configuración por número de parte deriva la especificación (ancho, calibre, acabado, ángulo, longitud, peso).</td>
+        </tr>
+        <tr>
+          <td>5</td><td>TC-01 · paso 6</td><td class="mono">VA01</td>
+          <td class="small">Control de disponibilidad: "Entrega única en fe.preferente: No es posible" (cantidad confirmada 0.000)</td>
+          <td><span class="pill warn">ADVERTENCIA</span></td>
+          <td class="small">Sin stock disponible (maquila Make-to-Order contra pedido). <b>Acción:</b> continuar y grabar; el abastecimiento se planifica por pedido.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Observaciones y siguientes acciones</h2>
+    <div class="note">
+      <b>Observación principal (datos maestros):</b> el cliente <code>GILM000002</code> opera correctamente en el área <code>LM00 / 50 / 00</code>, pero <b>no</b> en <code>LM00 / 50 / 10</code> (sin esquema de cálculo ni ship-to). Si el negocio requiere el <b>Sector 10</b>, debe extenderse el cliente y configurarse el esquema de precios para esa área (consultor funcional).<br><br>
+      <b>Siguientes pasos:</b> enviar instrucciones al consultor funcional → corregir → re-ejecutar pruebas → notificar a usuarios clave → visto bueno de usuarios finales.
+    </div>
+    <div class="sign">
+      <div>Elaboró<br><br>________________</div>
+      <div>Revisó<br><br>________________</div>
+      <div>Aprobó (usuario final)<br><br>________________</div>
+    </div>
+  </section>
+
+  <footer>
+    PROYECTO IA · MAQUILA MTO · KMAT · Perfiles LM — División Acero · Grupo Gilm<br>
+    Generado el 2026-05-22 a partir del Script de Pruebas UAT · Pedidos de prueba: 4010030435, 4010030436
+  </footer>
+</div>
+</body>
+</html>
