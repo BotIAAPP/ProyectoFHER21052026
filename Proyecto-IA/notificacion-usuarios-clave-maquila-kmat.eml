@@ -1,0 +1,74 @@
+To:
+Cc:
+Subject: Notificacion - Resultados UAT Maquila MTO / KMAT (Sector 00 validado) - Analisis y visto bueno
+X-Unsent: 1
+MIME-Version: 1.0
+Content-Type: text/html; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+<html>
+<head><meta charset="UTF-8"></head>
+<body style="font-family:Calibri,Arial,sans-serif;font-size:11pt;color:#1a1a1a;line-height:1.5">
+
+<p>Estimados usuarios clave:</p>
+
+<p>Les compartimos los resultados de la primera ronda de <b>pruebas UAT</b> del proceso <b>Maquila MTO con materiales configurables (KMAT)</b> en el ambiente de calidad (<b>QAS, mandante 400</b>).</p>
+
+<h3 style="color:#1f8a4c;margin-bottom:4px">✅ Escenario estándar (Sector 00) — VALIDADO</h3>
+<p style="margin-top:4px">El proceso quedó probado de extremo a extremo en la transacción <b>VA01</b>:</p>
+<ul style="margin-top:4px">
+  <li>Captura del pedido de maquila con <b>material configurable (KMAT)</b>.</li>
+  <li><b>Configuración por número de parte del cliente</b>: con un solo dato, SAP deriva la especificación completa (ancho, calibre, acabado, ángulo, longitud, peso).</li>
+  <li>Determinación de área de ventas, precio y grabado correctos.</li>
+</ul>
+
+<table cellpadding="8" cellspacing="0" style="border-collapse:collapse;font-size:10.5pt;width:100%;margin:10px 0">
+  <tr style="background:#f0f3f8">
+    <th align="left" style="border:1px solid #d8dee8">Pedido</th>
+    <th align="left" style="border:1px solid #d8dee8">Área de ventas</th>
+    <th align="left" style="border:1px solid #d8dee8">Material</th>
+    <th align="left" style="border:1px solid #d8dee8">Cantidad</th>
+    <th align="left" style="border:1px solid #d8dee8">Valor neto</th>
+    <th align="left" style="border:1px solid #d8dee8">Estado</th>
+  </tr>
+  <tr>
+    <td style="border:1px solid #e3e8ef"><b>4010030435</b></td>
+    <td style="border:1px solid #e3e8ef">LM00 / 50 / 00</td>
+    <td style="border:1px solid #e3e8ef">43000005 (CFG DOBLEZ MAQUILA)</td>
+    <td style="border:1px solid #e3e8ef">50 KG</td>
+    <td style="border:1px solid #e3e8ef">825.00 MXN</td>
+    <td style="border:1px solid #e3e8ef;color:#1f8a4c"><b>GRABADO</b></td>
+  </tr>
+  <tr style="background:#fafbfd">
+    <td style="border:1px solid #e3e8ef"><b>4010030436</b></td>
+    <td style="border:1px solid #e3e8ef">LM00 / 50 / 00</td>
+    <td style="border:1px solid #e3e8ef">43000005 (CFG DOBLEZ MAQUILA)</td>
+    <td style="border:1px solid #e3e8ef">50 KG</td>
+    <td style="border:1px solid #e3e8ef">825.00 MXN</td>
+    <td style="border:1px solid #e3e8ef;color:#1f8a4c"><b>GRABADO</b></td>
+  </tr>
+</table>
+
+<h3 style="color:#b97608;margin-bottom:4px">⚠️ Pendiente (no bloquea el proceso estándar)</h3>
+<p style="margin-top:4px">La variante con <b>Sector 10</b> requiere ajuste de datos maestros y de la determinación del esquema de cálculo (en gestión con el <b>consultor funcional</b>). Se re-ejecutará cuando se aplique la corrección.</p>
+
+<h3 style="margin-bottom:4px">Solicitud</h3>
+<ul style="margin-top:4px">
+  <li>Revisar el <b>reporte de resultados</b> adjunto y los logs.</li>
+  <li>Enviar comentarios u observaciones sobre el proceso validado (Sector 00).</li>
+  <li>Confirmar disponibilidad para una breve <b>sesión de análisis de resultados</b>, de cara al <b>visto bueno de usuarios finales</b>.</li>
+</ul>
+
+<p style="margin-top:12px"><b>Adjuntos sugeridos</b> (favor de adjuntarlos antes de enviar): <i>resultados-pruebas-maquila-kmat.html</i>, <i>log-documentos-creados.csv</i> y <i>log-errores.csv</i>.</p>
+
+<p>Quedamos atentos a sus comentarios. Saludos cordiales,</p>
+
+<p style="margin-top:18px;color:#444">
+<b>Fernando Hernández Castañeda</b><br>
+Proyecto IA · Maquila MTO · KMAT<br>
+Perfiles LM — División Acero · Grupo Gilm<br>
+SAP S/4HANA · QAS (mandante 400)
+</p>
+
+</body>
+</html>

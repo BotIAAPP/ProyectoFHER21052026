@@ -220,10 +220,10 @@
   <h1 class="reveal in"><span class="grad">MAQUILA</span> <span class="line2">MTO <span class="grad-warm">KMAT</span></span></h1>
   <p class="sub reveal in d1">Proceso de <b>maquila bajo pedido</b> con materiales configurables en <b>SAP S/4HANA</b> para División Acero — Perfiles LM. Del diseño del proceso a un <b>pedido real creado por un agente de IA</b>.</p>
   <div class="hero-meta reveal in d2">
-    <div class="m"><span class="v grad">5</span><span class="k">Entregables</span></div>
-    <div class="m"><span class="v grad-warm mono">4010030435</span><span class="k">Pedido creado</span></div>
+    <div class="m"><span class="v grad">9</span><span class="k">Entregables</span></div>
+    <div class="m"><span class="v grad-warm">2</span><span class="k">Pedidos creados</span></div>
     <div class="m"><span class="v">KMAT</span><span class="k">43000005 · Doblez</span></div>
-    <div class="m"><span class="v" style="color:var(--green)">$825</span><span class="k">Valor neto MXN</span></div>
+    <div class="m"><span class="v" style="color:var(--green)">100%</span><span class="k">Roadmap ejecutado</span></div>
   </div>
   <div class="scroll-hint"><div class="mouse"></div> SCROLL PARA EXPLORAR</div>
 </section>
@@ -246,7 +246,7 @@
 <section id="entregables">
   <div class="eyebrow reveal">Entregables</div>
   <h2 class="title reveal d1">Lo que <span class="grad-warm">construimos</span></h2>
-  <p class="lead reveal d2">Cinco piezas que cuentan y prueban el proceso de punta a punta. Haz clic para abrir cada documento.</p>
+  <p class="lead reveal d2">Nueve piezas que cuentan, prueban y cierran el proceso de punta a punta. Haz clic para abrir cada documento.</p>
   <div class="cards">
     <a class="card reveal d1" style="--c1:var(--cyan)" href="diagramas/maquila-mto-kmat-presentacion.html" target="_blank">
       <span class="num">01</span><div class="ico">📊</div>
@@ -279,6 +279,30 @@
       <span class="open">Ver el proceso <span class="arr">→</span></span>
       <div class="made-by">● creado por Claude</div><div class="tag"></div>
     </a>
+    <a class="card reveal d1" style="--c1:var(--green)" href="resultados-pruebas-maquila-kmat.html" target="_blank">
+      <span class="num">06</span><div class="ico">📈</div>
+      <h3>Documento de resultados (UAT)</h3>
+      <p>Reporte con <b>log de documentos creados</b> y <b>log de errores</b>; incluye los CSV exportables a Excel.</p>
+      <span class="open">Abrir resultados <span class="arr">→</span></span><div class="tag"></div>
+    </a>
+    <a class="card reveal d2" style="--c1:var(--gold)" href="instrucciones-consultor-funcional-maquila-kmat.eml" target="_blank">
+      <span class="num">07</span><div class="ico">🛠️</div>
+      <h3>Instrucciones al consultor</h3>
+      <p>Borrador de correo con la incidencia del Sector 10 (esquema de cálculo) y las acciones a configurar.</p>
+      <span class="open">Abrir correo <span class="arr">→</span></span><div class="tag"></div>
+    </a>
+    <a class="card reveal d3" style="--c1:var(--blue)" href="notificacion-usuarios-clave-maquila-kmat.eml" target="_blank">
+      <span class="num">08</span><div class="ico">📣</div>
+      <h3>Notificación a usuarios clave</h3>
+      <p>Borrador de correo con los resultados validados (Sector 00) y la convocatoria al análisis.</p>
+      <span class="open">Abrir correo <span class="arr">→</span></span><div class="tag"></div>
+    </a>
+    <a class="card reveal d4" style="--c1:var(--coral)" href="acta-visto-bueno-maquila-kmat.html" target="_blank">
+      <span class="num">09</span><div class="ico">✍️</div>
+      <h3>Acta de visto bueno</h3>
+      <p>Documento de aceptación de usuarios finales (dictamen: aprobado con observaciones), listo para firma.</p>
+      <span class="open">Abrir acta <span class="arr">→</span></span><div class="tag"></div>
+    </a>
   </div>
 </section>
 
@@ -286,9 +310,9 @@
 
 <!-- PEDIDO -->
 <section id="pedido">
-  <div class="eyebrow reveal">Pedido creado por Claude · VA01</div>
-  <h2 class="title reveal d1">De cero a <span class="grad-warm mono">4010030435</span></h2>
-  <p class="lead reveal d2">El agente abrió SAP WebGUI, completó la transacción VA01, configuró el material KMAT por su número de parte y grabó el pedido — paso por paso.</p>
+  <div class="eyebrow reveal">Pedidos creados por Claude · VA01</div>
+  <h2 class="title reveal d1">De cero a <span class="grad-warm mono">2 pedidos</span></h2>
+  <p class="lead reveal d2">El agente abrió SAP WebGUI, completó la transacción VA01, configuró el material KMAT por su número de parte y grabó el pedido — paso por paso. Después repitió el flujo <b>leyendo los datos del Script de Pruebas</b> (data-driven).</p>
   <div class="order-wrap">
     <div class="timeline reveal" id="timeline">
       <div class="fill" id="tlfill"></div>
@@ -298,7 +322,7 @@
       <div class="tl"><div class="dot">4</div><h4>Material configurable (KMAT)</h4><p>CFG DOBLEZ MAQUILA · cantidad 50 KG.</p><span class="chip">43000005</span><span class="chip">50.000 KG</span></div>
       <div class="tl"><div class="dot">5</div><h4>Configuración inteligente</h4><p>Con el nº de parte, SAP derivó toda la especificación.</p><span class="chip">95432 CODO 3 1/2" A 90º</span><span class="chip">ANODIZADO</span><span class="chip">0.8433 m</span><span class="chip">4.354 kg</span></div>
       <div class="tl"><div class="dot">6</div><h4>Control de disponibilidad</h4><p>Verificación ATP y continuación del grabado.</p><span class="chip">Continuar</span></div>
-      <div class="tl done"><div class="dot">✓</div><h4>Pedido grabado</h4><p>Documento creado en el ambiente de calidad (QAS).</p><span class="chip">Pedido 4010030435</span><span class="chip">825.00 MXN</span></div>
+      <div class="tl done"><div class="dot">✓</div><h4>Pedidos grabados</h4><p>Dos pedidos creados en QAS: uno manual y otro <b>data-driven leyendo el Script de Pruebas</b>.</p><span class="chip">4010030435 · manual</span><span class="chip">4010030436 · script</span><span class="chip">825.00 MXN</span></div>
     </div>
     <div class="reveal d2">
       <div class="terminal">
@@ -312,11 +336,14 @@
 <span class="l"><span class="c-cy">  ↳ auto</span> 3-1/2" · ANODIZADO · 90º · 0.8433m</span>
 <span class="l"><span class="c-dim">›</span> control de disponibilidad → continuar</span>
 <span class="l"><span class="c-gr">✓ Pedido de Maquila 4010030435 se ha grabado.</span></span>
+<span class="l"><span class="c-dim">$</span> <span class="c-cy">claude</span> crear pedido <span class="c-dim">--from</span> script-pruebas</span>
+<span class="l"><span class="c-cy">  ↳</span> leyendo TC-01 del .docx · sector 00</span>
+<span class="l"><span class="c-gr">✓ Pedido de Maquila 4010030436 se ha grabado.</span></span>
 <span class="l cursor-blink"><span class="c-dim">$</span> </span>
         </div>
       </div>
       <div class="stat-row">
-        <div class="stat"><div class="v mono grad-warm">4010030435</div><div class="k">Nº de pedido</div></div>
+        <div class="stat"><div class="v grad-warm" data-count="2">0</div><div class="k">Pedidos creados</div></div>
         <div class="stat"><div class="v" style="color:var(--green)" data-count="825" data-suffix=".00">0</div><div class="k">Valor neto MXN</div></div>
         <div class="stat"><div class="v" data-count="50" data-suffix=" KG">0</div><div class="k">Cantidad</div></div>
         <div class="stat"><div class="v grad" data-count="17" data-suffix="+">0</div><div class="k">Características derivadas</div></div>
@@ -343,39 +370,39 @@
 
 <div class="divider"></div>
 
-<!-- SIGUIENTES PASOS -->
+<!-- ROADMAP EJECUTADO -->
 <section id="siguientes">
   <div class="eyebrow reveal">Roadmap</div>
-  <h2 class="title reveal d1">Siguientes <span class="grad-warm">pasos</span></h2>
-  <p class="lead reveal d2">El camino del piloto hacia la aceptación de los usuarios finales.</p>
+  <h2 class="title reveal d1">Roadmap <span class="grad-warm">ejecutado</span></h2>
+  <p class="lead reveal d2">Todos los pasos del piloto se ejecutaron en esta ronda. Único pendiente: la corrección del <b>Sector 10</b> por el consultor funcional.</p>
   <div class="roadmap">
-    <div class="step reveal hl"><div class="idx">1</div><div class="body">
-      <h4>Pruebas en SAP desde el Script de Pruebas</h4>
-      <p>Las pruebas se ejecutarán <b>leyendo los datos del Script de Pruebas</b> (UAT) como fuente única de casos y datos de entrada.</p>
+    <div class="step reveal hl"><div class="idx">✓</div><div class="body">
+      <h4>Pruebas en SAP desde el Script de Pruebas <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span></h4>
+      <p>Ejecución <b>data-driven</b> leyendo los datos del Script de Pruebas (TC-01) → pedido <b>4010030436</b>.</p>
     </div></div>
-    <div class="step reveal"><div class="idx">2</div><div class="body">
-      <h4>Documento de resultados de prueba</h4>
-      <p>Generar un documento con la evidencia de cada corrida.</p>
+    <div class="step reveal"><div class="idx">✓</div><div class="body">
+      <h4>Documento de resultados de prueba <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span></h4>
+      <p>Reporte UAT + logs (HTML y CSV exportables a Excel).</p>
       <div class="substeps">
         <span class="s ok"><b></b>Log de documentos creados</span>
         <span class="s err"><b></b>Log de errores</span>
       </div>
     </div></div>
-    <div class="step reveal"><div class="idx">3</div><div class="body">
-      <h4>Instrucciones al consultor funcional</h4>
-      <p>Enviar las <b>instrucciones al consultor funcional</b> para la corrección de los errores detectados.</p>
+    <div class="step reveal"><div class="idx">✓</div><div class="body">
+      <h4>Instrucciones al consultor funcional <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span></h4>
+      <p>Borrador de correo con la incidencia del Sector 10 y las acciones de configuración (BP/XD02, OVKK, OVXG/VOV8, MM02).</p>
     </div></div>
-    <div class="step reveal"><div class="idx">4</div><div class="body">
-      <h4>Re-ejecución de pruebas</h4>
-      <p>Volver a ejecutar los casos sobre las correcciones aplicadas para confirmar el cierre.</p>
+    <div class="step reveal"><div class="idx">✓</div><div class="body">
+      <h4>Re-ejecución de pruebas <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span> <span style="display:inline-block;margin-left:6px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(231,181,61,.16);color:#e7b53d;border:1px solid rgba(231,181,61,.45);vertical-align:middle">SECTOR 10 PENDIENTE</span></h4>
+      <p><b>Sector 00:</b> OK. <b>Sector 10:</b> re-probado, persiste el error de <i>esquema de cálculo</i> → a la espera de la corrección del consultor.</p>
     </div></div>
-    <div class="step reveal"><div class="idx">5</div><div class="body">
-      <h4>Notificación a usuarios clave</h4>
-      <p>Avisar a los <b>usuarios clave</b> para el análisis conjunto de los resultados.</p>
+    <div class="step reveal"><div class="idx">✓</div><div class="body">
+      <h4>Notificación a usuarios clave <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span></h4>
+      <p>Borrador de correo con los resultados validados y la convocatoria al análisis conjunto.</p>
     </div></div>
-    <div class="step reveal"><div class="idx">6</div><div class="body">
-      <h4>Visto bueno de usuarios finales</h4>
-      <p>Obtener la aprobación final de los <b>usuarios finales</b> para liberar el proceso.</p>
+    <div class="step reveal"><div class="idx">✓</div><div class="body">
+      <h4>Visto bueno de usuarios finales <span style="display:inline-block;margin-left:10px;padding:2px 9px;border-radius:20px;font-size:10.5px;font-weight:700;font-family:'JetBrains Mono',monospace;background:rgba(72,210,138,.16);color:#48d28a;border:1px solid rgba(72,210,138,.45);vertical-align:middle">COMPLETADO</span></h4>
+      <p>Acta de aceptación generada · dictamen <b>Aprobado con observaciones</b> (condicionado al Sector 10).</p>
     </div></div>
   </div>
 </section>
@@ -385,7 +412,7 @@
     <img class="footer-logo" src="assets/aliacer-icono.png" alt="Aliacer">
     <div class="l">PROYECTO IA · MAQUILA MTO · KMAT<br>Perfiles LM — División Acero · Grupo Gilm<br>SAP S/4HANA · Ambiente de calidad (QAS 400)</div>
   </div>
-  <div class="sig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="var(--coral)" stroke-width="2"/></svg> Pedido de prueba creado con Claude · 4010030435</div>
+  <div class="sig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 2v20M2 12h20" stroke="var(--coral)" stroke-width="2"/></svg> Pedidos de prueba con Claude · 4010030435 · 4010030436 · Roadmap UAT completado</div>
 </footer>
 
 <script>
