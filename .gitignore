@@ -28,3 +28,12 @@ credentials.*
 # Archivos de Office abiertos
 ~$*.xlsx
 ~$*.docx
+
+# Node / Playwright (automatización local, NO versionar)
+node_modules/
+package-lock.json
+pw/userdata/
+pw/*.png
+
+# Respaldos con timestamp (p. ej. *.bak-20260522-115545.docx)
+*.bak-*
