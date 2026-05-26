@@ -1,0 +1,17 @@
+[
+  "Bienvenidos a la presentación de Aliacer. Maquila al cliente bajo el modelo make to order, con materiales configurables.",
+  "Cuando el cliente nos pide una variante específica del producto, en lugar de fabricar contra inventario, su pedido dispara la producción. El cliente arma su propia receta eligiendo opciones del menú, y el sistema genera automáticamente lo que sigue.",
+  "Cinco áreas intervienen en el flujo. Ventas captura el pedido. Planeación calcula los requerimientos de material. Producción fabrica. Almacén recibe y embarca. Y Facturación cierra el ciclo.",
+  "Paso uno. El cliente nos pide algo a la medida. Por ejemplo: rollos calibre veintiséis, ancho cuarenta y ocho pulgadas, galvalume, con flor regular, color blanco mate. Esa combinación nunca la tenemos en existencia. La fabricamos cuando él la pide.",
+  "Paso dos. Elegimos las opciones del menú. Al teclear el código del producto, el sistema abre la pantalla de configuración. Marcamos calibre, ancho, recubrimiento, acabado, color. Las opciones se filtran solas según las que ya elegimos.",
+  "Punto de decisión. ¿El cliente nos da su propia materia prima? Si la respuesta es sí, vamos al escenario con material del cliente. Si la respuesta es no, nosotros ponemos el material y cobramos todo.",
+  "Paso tres. Variante con material del cliente. Si el cliente nos manda sus rollos, los recibimos a un compartimento especial. Ese material nunca es nuestro. Físicamente está en nuestro almacén, pero contablemente sigue siendo del cliente. Las mermas también se descuentan de su lote.",
+  "Paso tres. Variante estándar. Si nosotros ponemos el material, planeación calcula los requerimientos de material y reserva la cantidad exacta etiquetada con el número de pedido. Ese material ya tiene dueño. El sistema lo bloquea para cualquier otro cliente.",
+  "Paso cuatro. Se crea y libera la orden de producción. La orden hereda la configuración del pedido, así que la lista de componentes y la ruta de fabricación ya vienen filtradas. Solo aparecen los pasos y materiales que aplican a esa variante.",
+  "Paso cinco. La fábrica corta, procesa y confirma cada operación. Si el material es del cliente, la orden consume el material del cliente, no el nuestro.",
+  "Paso seis. El producto terminado entra a inventario, pero apartado. No entra a las existencias libres, sino a un compartimento reservado para ese pedido. Aparece bajo el cliente y el número de pedido.",
+  "Paso siete. Se prepara la entrega y sale al cliente. Almacén prepara y surte el material apartado, lo carga al transporte, y registra la salida.",
+  "Paso ocho. Le facturamos al cliente. Si el material es del cliente, la factura cobra solo el servicio de maquila, no el material. Si es estándar, se cobra todo: material más servicio.",
+  "Glosario. Términos clave: fabricación contra pedido, material configurable, planeación de requerimientos de material, inventario reservado del pedido, material proporcionado por el cliente, inventario consignado del cliente, lista de materiales, y ruta de fabricación.",
+  "Fin del flujo. Cliente pide, configuramos, planeamos, producimos, recibimos, embarcamos y facturamos. Gracias por su atención."
+]
