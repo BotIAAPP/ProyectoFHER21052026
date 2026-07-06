@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Manual de Usuario — Bot SOLPED WhatsApp · Indalum</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+    :root {
+      --wa-dark:   #075e54;
+      --wa-green:  #25d366;
+      --wa-light:  #dcf8c6;
+      --wa-teal:   #128c7e;
+      --ink:       #1a1a2e;
+      --muted:     #64748b;
+      --bg:        #f0f2f5;
+      --card:      #ffffff;
+      --border:    #e2e8f0;
+      --shadow:    0 4px 24px rgba(0,0,0,.08);
+      --radius:    14px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      line-height: 1.6;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #0a3d2e 0%, var(--wa-dark) 50%, var(--wa-teal) 100%);
+      color: #fff;
+      padding: 0;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    }
+    .hero-inner {
+      position: relative;
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 40px 36px;
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+    .hero-logo {
+      background: #fff;
+      border-radius: 12px;
+      padding: 10px 18px;
+      flex-shrink: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+    }
+    .hero-logo img {
+      height: 52px;
+      display: block;
+    }
+    .hero-divider {
+      width: 1px; height: 64px;
+      background: rgba(255,255,255,.25);
+      flex-shrink: 0;
+    }
+    .hero-text h1 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      letter-spacing: -.3px;
+      line-height: 1.2;
+    }
+    .hero-text h1 span { color: var(--wa-green); }
+    .hero-text p {
+      margin-top: 6px;
+      font-size: .93rem;
+      opacity: .8;
+      font-weight: 400;
+    }
+    .hero-badges {
+      margin-top: 16px;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .hbadge {
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: .75rem;
+      font-weight: 600;
+      letter-spacing: .3px;
+      backdrop-filter: blur(4px);
+    }
+    .hbadge.green { background: var(--wa-green); border-color: var(--wa-green); color: #000; }
+
+    /* ── TOC strip ── */
+    .toc-strip {
+      background: var(--wa-dark);
+      border-top: 1px solid rgba(255,255,255,.1);
+    }
+    .toc-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: flex;
+      overflow-x: auto;
+      gap: 0;
+    }
+    .toc-inner::-webkit-scrollbar { display: none; }
+    .toc-item {
+      color: rgba(255,255,255,.7);
+      font-size: .78rem;
+      font-weight: 500;
+      padding: 12px 16px;
+      white-space: nowrap;
+      border-bottom: 2px solid transparent;
+      cursor: default;
+      transition: all .2s;
+      text-decoration: none;
+    }
+    .toc-item:hover { color: #fff; border-bottom-color: var(--wa-green); }
+
+    /* ── CONTAINER ── */
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 40px 80px;
+    }
+
+    /* ── SECTION HEADER ── */
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 48px 0 18px;
+    }
+    .section-icon {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--wa-dark), var(--wa-teal));
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(7,94,84,.35);
+    }
+    .section-header h2 {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--wa-dark);
+    }
+    .section-header .sec-num {
+      font-size: .72rem;
+      font-weight: 700;
+      color: var(--wa-green);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: block;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 28px 32px;
+      box-shadow: var(--shadow);
+      border: 1px solid var(--border);
+      margin-bottom: 16px;
+    }
+    .card p { font-size: .9rem; color: #374151; }
+    .card ul, .card ol { font-size: .9rem; color: #374151; padding-left: 20px; }
+    .card li { margin-bottom: 5px; }
+
+    /* ── INFO GRID ── */
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-top: 18px;
+    }
+    .info-tile {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 16px 18px;
+      text-align: center;
+    }
+    .info-tile .val { font-size: 1.4rem; font-weight: 800; color: var(--wa-dark); }
+    .info-tile .lbl { font-size: .73rem; color: var(--muted); margin-top: 2px; font-weight: 500; }
+
+    /* ── CHAT BUBBLES ── */
+    .chat {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin: 16px 0;
+      background: #ece5dd url("data:image/svg+xml,%3Csvg width='50' height='50' viewBox='0 0 50 50' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M25 25L0 0h50z' fill='%23c8b89a' fill-opacity='0.07'/%3E%3C/svg%3E");
+      border-radius: 12px;
+      padding: 16px;
+    }
+    .bubble {
+      max-width: 76%;
+      padding: 9px 13px 7px;
+      border-radius: 12px;
+      font-size: .85rem;
+      line-height: 1.5;
+      position: relative;
+      box-shadow: 0 1px 2px rgba(0,0,0,.15);
+    }
+    .bubble .time {
+      font-size: .68rem;
+      color: rgba(0,0,0,.4);
+      display: block;
+      text-align: right;
+      margin-top: 3px;
+    }
+    .bot  { background: #fff; align-self: flex-start; border-top-left-radius: 3px; }
+    .user { background: var(--wa-light); align-self: flex-end; border-top-right-radius: 3px; }
+    .sender {
+      font-size: .68rem;
+      font-weight: 700;
+      margin-bottom: 3px;
+      display: block;
+    }
+    .bot  .sender { color: var(--wa-teal); }
+    .user .sender { color: #4caf50; }
+
+    /* ── STEPS ── */
+    .steps { display: flex; flex-direction: column; gap: 0; }
+    .step {
+      display: flex;
+      gap: 0;
+      position: relative;
+    }
+    .step:not(:last-child) .step-left::after {
+      content: '';
+      position: absolute;
+      left: 17px; top: 36px; bottom: -4px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--wa-green), #bbf7d0);
+    }
+    .step-left {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-right: 18px;
+      padding-top: 2px;
+    }
+    .step-num {
+      width: 36px; height: 36px;
+      background: linear-gradient(135deg, var(--wa-dark), var(--wa-teal));
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: .82rem;
+      flex-shrink: 0;
+      box-shadow: 0 2px 8px rgba(7,94,84,.4);
+      z-index: 1;
+    }
+    .step-body {
+      flex: 1;
+      padding-bottom: 24px;
+    }
+    .step-body strong {
+      display: block;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+    }
+    .step-body p { font-size: .83rem; color: var(--muted); margin-top: 6px; }
+
+    /* ── ALERTS ── */
+    .note, .tip {
+      border-radius: 9px;
+      padding: 13px 16px;
+      font-size: .85rem;
+      margin: 10px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .note { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+    .tip  { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+    .note::before { content: '⚠️'; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+    .tip::before  { content: '💡'; font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+
+    /* ── TABLE ── */
+    .tbl-wrap { overflow-x: auto; border-radius: 10px; box-shadow: var(--shadow); }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .86rem;
+      background: #fff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    thead th {
+      background: linear-gradient(135deg, var(--wa-dark), var(--wa-teal));
+      color: #fff;
+      padding: 12px 16px;
+      text-align: left;
+      font-weight: 600;
+      font-size: .8rem;
+      letter-spacing: .3px;
+    }
+    tbody td { padding: 11px 16px; border-bottom: 1px solid #f1f5f9; vertical-align: top; color: #374151; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:nth-child(even) td { background: #f8fafc; }
+    tbody tr:hover td { background: #f0fdf4; transition: background .15s; }
+    .tag {
+      display: inline-block;
+      background: var(--wa-dark);
+      color: #fff;
+      border-radius: 5px;
+      padding: 2px 8px;
+      font-size: .72rem;
+      font-weight: 600;
+    }
+    .tag.green { background: var(--wa-green); color: #000; }
+    .tag.gray  { background: #e2e8f0; color: #475569; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow-diagram {
+      background: linear-gradient(135deg, #0a3d2e, var(--wa-dark));
+      border-radius: var(--radius);
+      padding: 32px;
+      color: #fff;
+      font-family: 'Courier New', monospace;
+      font-size: .78rem;
+      line-height: 2;
+      overflow-x: auto;
+      box-shadow: var(--shadow);
+    }
+    .flow-diagram .node {
+      display: inline-block;
+      background: rgba(37,211,102,.15);
+      border: 1px solid rgba(37,211,102,.4);
+      border-radius: 6px;
+      padding: 1px 10px;
+      color: var(--wa-green);
+      font-weight: 700;
+    }
+    .flow-diagram .decision {
+      display: inline-block;
+      background: rgba(255,200,0,.1);
+      border: 1px solid rgba(255,200,0,.4);
+      border-radius: 6px;
+      padding: 1px 10px;
+      color: #fbbf24;
+      font-weight: 700;
+    }
+
+    /* ── TIPS GRID ── */
+    .tips-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 4px;
+    }
+    .tip-card {
+      background: linear-gradient(135deg, #f0fdf4, #fff);
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 18px 20px;
+      font-size: .85rem;
+      color: #166534;
+    }
+    .tip-card .tip-icon { font-size: 1.4rem; margin-bottom: 8px; display: block; }
+    .tip-card strong { display: block; font-size: .88rem; color: var(--wa-dark); margin-bottom: 4px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--wa-dark);
+      color: rgba(255,255,255,.6);
+      text-align: center;
+      padding: 24px;
+      font-size: .78rem;
+    }
+    footer strong { color: rgba(255,255,255,.9); }
+    footer .footer-logo { height: 28px; opacity: .7; margin-bottom: 8px; filter: brightness(0) invert(1); }
+
+    @media (max-width: 640px) {
+      .hero-inner { flex-direction: column; align-items: flex-start; gap: 16px; padding: 28px 20px; }
+      .hero-divider { display: none; }
+      .container { padding: 24px 16px 60px; }
+      .info-grid { grid-template-columns: 1fr; }
+      .tips-grid { grid-template-columns: 1fr; }
+      .toc-inner { padding: 0 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══ -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-logo">
+      <img src="https://indalum.com.mx/wp-content/uploads/logotipo-indalum@2x-1.png" alt="Indalum" onerror="this.style.display='none'" />
+    </div>
+    <div class="hero-divider"></div>
+    <div class="hero-text">
+      <h1>Bot SOLPED <span>WhatsApp</span></h1>
+      <p>Manual de Usuario · Solicitudes de Pedido en SAP desde tu celular</p>
+      <div class="hero-badges">
+        <span class="hbadge green">✓ Sociedad IN00</span>
+        <span class="hbadge">SAP S/4HANA</span>
+        <span class="hbadge">WhatsApp Business</span>
+        <span class="hbadge">v1.0 · 2026</span>
+      </div>
+    </div>
+  </div>
+  <div class="toc-strip">
+    <div class="toc-inner">
+      <a class="toc-item" href="#intro">¿Qué es?</a>
+      <a class="toc-item" href="#inicio">Iniciar</a>
+      <a class="toc-item" href="#flujoA">Flujo A · Material</a>
+      <a class="toc-item" href="#flujoB">Flujo B · Servicio</a>
+      <a class="toc-item" href="#referencia">Referencia</a>
+      <a class="toc-item" href="#mensajes">Mensajes</a>
+      <a class="toc-item" href="#diagrama">Diagrama</a>
+      <a class="toc-item" href="#tips">Consejos</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- ═══ 1. QUÉ ES ═══ -->
+  <div id="intro" class="section-header">
+    <div class="section-icon">📱</div>
+    <div>
+      <span class="sec-num">Sección 1</span>
+      <h2>¿Qué es el Bot SOLPED?</h2>
+    </div>
+  </div>
+  <div class="card">
+    <p>
+      El <strong>Bot SOLPED</strong> es un asistente inteligente de WhatsApp que te permite crear
+      <strong>Solicitudes de Pedido (SOLPED) directamente en SAP S/4HANA</strong> desde tu
+      teléfono, sin necesidad de acceder a SAP GUI ni conectarte a la VPN corporativa.
+    </p>
+    <div class="info-grid">
+      <div class="info-tile">
+        <div class="val">IN00</div>
+        <div class="lbl">Sociedad SAP</div>
+      </div>
+      <div class="info-tile">
+        <div class="val">24/7</div>
+        <div class="lbl">Disponibilidad</div>
+      </div>
+      <div class="info-tile">
+        <div class="val">0 VPN</div>
+        <div class="lbl">Sin VPN requerida</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══ 2. INICIAR ═══ -->
+  <div id="inicio" class="section-header">
+    <div class="section-icon">👋</div>
+    <div>
+      <span class="sec-num">Sección 2</span>
+      <h2>Cómo iniciar una conversación</h2>
+    </div>
+  </div>
+  <div class="card">
+    <p>Envía <strong>"hola"</strong> al número del Bot para comenzar. El bot responderá confirmando la sociedad asignada.</p>
+    <div class="chat">
+      <div class="bubble user"><span class="sender">Tú</span>hola<span class="time">11:47</span></div>
+      <div class="bubble bot"><span class="sender">Bot SOLPED</span>Sociedad: IN00<span class="time">11:47</span></div>
+    </div>
+    <div class="note">Si el bot no responde en 2 minutos, vuelve a enviar "hola" para reiniciar la sesión.</div>
+  </div>
+
+  <!-- ═══ 3. FLUJO A ═══ -->
+  <div id="flujoA" class="section-header">
+    <div class="section-icon">🔩</div>
+    <div>
+      <span class="sec-num">Sección 3</span>
+      <h2>Flujo A — Material con nombre o código conocido</h2>
+    </div>
+  </div>
+  <div class="card">
+    <p>Usa este flujo cuando conoces el nombre o número del material que deseas solicitar (ej. tornillos, arandelas, refacciones).</p>
+  </div>
+  <div class="card">
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <strong>Escribe el nombre o código del material</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>ARANDELA<span class="time">11:47</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Muy bien dame un momento<span class="time">11:47</span></div>
+          </div>
+          <p>El bot busca en el catálogo de SAP y regresa una lista numerada de coincidencias.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <strong>Selecciona el material de la lista</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Material<br/><em style="opacity:.6;font-size:.82rem">1. ARANDELA PLANA ½"<br/>2. ARANDELA PRESIÓN ¾"<br/>…</em><span class="time">11:47</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:47</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Material guardado correctamente<span class="time">11:48</span></div>
+          </div>
+          <p>Responde con el <strong>número</strong> de la opción deseada.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <strong>Confirma la selección</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>SI<span class="time">11:48</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">4</div></div>
+        <div class="step-body">
+          <strong>Indica la cantidad a solicitar</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Cantidad a solicitar<span class="time">11:48</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>15<span class="time">11:48</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Excelente<span class="time">11:48</span></div>
+          </div>
+          <p>Escribe solo el número, sin unidad de medida.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">5</div></div>
+        <div class="step-body">
+          <strong>Revisa el resumen y confirma</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Resumen de tu SOLPED<span class="time">11:48</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>SI<span class="time">11:48</span></div>
+          </div>
+          <p>Verifica que todos los datos sean correctos antes de confirmar.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">6</div></div>
+        <div class="step-body">
+          <strong>¿Agregar otra partida?</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Agregar otra partida<span class="time">11:48</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>NO<span class="time">11:48</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Excelente dame un momento<span class="time">11:48</span></div>
+          </div>
+          <p>Responde <strong>SI</strong> para agregar más partidas a la misma SOLPED, o <strong>NO</strong> para finalizar.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">7</div></div>
+        <div class="step-body">
+          <strong>Confirmación final — SOLPED creada en SAP</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Resumen de tu SOLPED<span class="time">11:48</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>SI<span class="time">11:48</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>¡Solicitud creada con éxito! ✅<span class="time">11:48</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ 4. FLUJO B ═══ -->
+  <div id="flujoB" class="section-header">
+    <div class="section-icon">🛠️</div>
+    <div>
+      <span class="sec-num">Sección 4</span>
+      <h2>Flujo B — Sin número de material (Servicios / Texto libre)</h2>
+    </div>
+  </div>
+  <div class="card">
+    <p>Usa este flujo cuando el artículo <strong>no existe en el catálogo de SAP</strong> o cuando se trata de un <strong>servicio</strong> (reparación, mantenimiento, consultoría, etc.).</p>
+  </div>
+  <div class="card">
+    <div class="steps">
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">1</div></div>
+        <div class="step-body">
+          <strong>Indica que no tienes número de material</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Comencemos nuevamente<span class="time">11:48</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>NO TENGO<span class="time">11:49</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Muy bien dame un momento<span class="time">11:49</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>No encontré materiales<span class="time">11:49</span></div>
+          </div>
+          <p>Escribe <strong>"NO TENGO"</strong> cuando no cuentes con número de material.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">2</div></div>
+        <div class="step-body">
+          <strong>Selecciona la opción de texto libre</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:49</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Descripción de la SOLPED<span class="time">11:49</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">3</div></div>
+        <div class="step-body">
+          <strong>Escribe la descripción del servicio</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>REPARACION DE CALIBRADOR<span class="time">11:49</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Buscar grupo de artículos<span class="time">11:49</span></div>
+          </div>
+          <p>Describe el servicio o material en <strong>MAYÚSCULAS</strong>, de forma clara y concisa.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">4</div></div>
+        <div class="step-body">
+          <strong>Selecciona el Grupo de Artículos</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>SERVICIO<span class="time">11:50</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Grupo de Artículos<span class="time">11:50</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:50</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Excelente se guardo: S00N, SERVICIOS<span class="time">11:50</span></div>
+          </div>
+          <p>Escribe una palabra clave y luego selecciona con el número de la lista.</p>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">5</div></div>
+        <div class="step-body">
+          <strong>Selecciona el Grupo de Compras</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Grupo de Compras<span class="time">11:50</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>2<span class="time">11:50</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Excelente se guardo: 201 Indirectos<span class="time">11:50</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">6</div></div>
+        <div class="step-body">
+          <strong>Selecciona la Cuenta Contable (GL Account)</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>COMPRAS<span class="time">11:51</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Cuenta Contable (GL Account)<span class="time">11:51</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:51</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Muy bien se guardo: 65008500 COMPRAS CTA TECNICA<span class="time">11:51</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">7</div></div>
+        <div class="step-body">
+          <strong>Selecciona la Unidad de Medida</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>SERVICIO<span class="time">11:51</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Unidad de Medida<span class="time">11:52</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:52</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Muy bien se guardo: SER, SERVICIO<span class="time">11:52</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">8</div></div>
+        <div class="step-body">
+          <strong>Selecciona el Centro de Costo</strong>
+          <div class="chat">
+            <div class="bubble user"><span class="sender">Tú</span>COMPRAS<span class="time">11:52</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Selección de Centro de Costo<span class="time">11:52</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>1<span class="time">11:53</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Muy bien se guardo: 400010100, Compras<span class="time">11:53</span></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-left"><div class="step-num">9</div></div>
+        <div class="step-body">
+          <strong>Confirmación y creación final en SAP</strong>
+          <div class="chat">
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Resumen de tu SOLPED<span class="time">11:53</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>SI<span class="time">11:53</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Agregar otra partida<span class="time">11:53</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>NO<span class="time">11:54</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>Resumen de tu SOLPED<span class="time">11:54</span></div>
+            <div class="bubble user"><span class="sender">Tú</span>SI<span class="time">11:54</span></div>
+            <div class="bubble bot"><span class="sender">Bot SOLPED</span>¡Solicitud creada con éxito! ✅<span class="time">11:54</span></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══ 5. REFERENCIA DE CAMPOS ═══ -->
+  <div id="referencia" class="section-header">
+    <div class="section-icon">📋</div>
+    <div>
+      <span class="sec-num">Sección 5</span>
+      <h2>Referencia rápida de campos</h2>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Campo SAP</th>
+          <th>¿Qué enviar al bot?</th>
+          <th>Ejemplo de respuesta</th>
+          <th>Flujo</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Material</strong></td><td>Nombre o código del artículo</td><td>ARANDELA / 100-300</td><td><span class="tag green">A</span></td></tr>
+        <tr><td><strong>Sin material</strong></td><td>NO TENGO</td><td>NO TENGO</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Descripción</strong></td><td>Texto libre en mayúsculas</td><td>REPARACION DE CALIBRADOR</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Cantidad</strong></td><td>Número entero o decimal</td><td>15</td><td><span class="tag green">A</span> <span class="tag">B</span></td></tr>
+        <tr><td><strong>Grupo de Artículos</strong></td><td>Palabra clave → número</td><td>SERVICIO → 1 (S00N)</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Grupo de Compras</strong></td><td>Número de la lista</td><td>2 → 201 Indirectos</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Cuenta Contable (GL)</strong></td><td>Palabra clave → número</td><td>COMPRAS → 1 (65008500)</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Unidad de Medida</strong></td><td>Tipo → número</td><td>SERVICIO → 1 (SER)</td><td><span class="tag">B</span></td></tr>
+        <tr><td><strong>Centro de Costo</strong></td><td>Área → número</td><td>COMPRAS → 1 (400010100)</td><td><span class="tag green">A</span> <span class="tag">B</span></td></tr>
+        <tr><td><strong>Confirmar / Cancelar</strong></td><td>SI o NO</td><td>SI</td><td><span class="tag green">A</span> <span class="tag">B</span></td></tr>
+        <tr><td><strong>Agregar partida</strong></td><td>SI para agregar, NO para finalizar</td><td>NO</td><td><span class="tag green">A</span> <span class="tag">B</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══ 6. MENSAJES DEL BOT ═══ -->
+  <div id="mensajes" class="section-header">
+    <div class="section-icon">💬</div>
+    <div>
+      <span class="sec-num">Sección 6</span>
+      <h2>Mensajes del bot y su significado</h2>
+    </div>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr><th>Mensaje del bot</th><th>Significado</th><th>Acción del usuario</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Sociedad: IN00</strong></td><td>Sesión iniciada correctamente</td><td>Escribe el nombre del material o NO TENGO</td></tr>
+        <tr><td><strong>Muy bien dame un momento</strong></td><td>Consultando SAP (búsqueda en progreso)</td><td>Espera la respuesta</td></tr>
+        <tr><td><strong>Selección de Material / Grupo / etc.</strong></td><td>Lista de opciones disponibles</td><td>Responde con el número de tu elección</td></tr>
+        <tr><td><strong>Guardado correctamente / Excelente se guardo: …</strong></td><td>Dato aceptado y registrado</td><td>Continúa con el siguiente campo</td></tr>
+        <tr><td><strong>No encontré materiales</strong></td><td>Sin coincidencias en catálogo SAP</td><td>Selecciona 1 para ingresar descripción manual</td></tr>
+        <tr><td><strong>Descripción de la SOLPED</strong></td><td>Solicita descripción en texto libre</td><td>Escribe la descripción en mayúsculas</td></tr>
+        <tr><td><strong>Resumen de tu SOLPED</strong></td><td>Muestra todos los datos capturados para revisión</td><td>SI para confirmar / NO para cancelar</td></tr>
+        <tr><td><strong>Agregar otra partida</strong></td><td>Pregunta si deseas añadir más líneas</td><td>SI o NO</td></tr>
+        <tr><td><strong>Comencemos nuevamente</strong></td><td>Inicio de captura para nueva partida</td><td>Escribe material o NO TENGO</td></tr>
+        <tr><td><strong>¡Solicitud creada con éxito! ✅</strong></td><td>SOLPED generada en SAP correctamente</td><td>Proceso completado</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ═══ 7. DIAGRAMA ═══ -->
+  <div id="diagrama" class="section-header">
+    <div class="section-icon">🗺️</div>
+    <div>
+      <span class="sec-num">Sección 7</span>
+      <h2>Diagrama de flujo general</h2>
+    </div>
+  </div>
+  <div class="flow-diagram">
+<pre style="font-family:'Courier New',monospace; font-size:.78rem; line-height:1.9; background:none; color:inherit;">
+  Envía "hola"
+       │
+       ▼
+  <span class="node">Sociedad IN00</span>
+       │
+       ▼
+  ¿Tienes número o nombre de material?
+       │
+  ┌────┴────────────────────────────────────┐
+  │ SÍ                                      │ NO TENGO
+  ▼                                         ▼
+Escribe nombre/código               <span class="decision">Descripción texto libre</span>
+  │                                         │
+Bot busca en SAP                    Grupo de Artículos
+  │                                         │
+<span class="decision">¿Encontró?</span>                          Grupo de Compras
+  │ SÍ                                      │
+Selecciona # de lista               Cuenta Contable (GL)
+  │                                         │
+Material guardado               Unidad de Medida
+       │                                    │
+       └──────────┬─────────────────────────┘
+                  │
+              Cantidad
+                  │
+              Resumen ──► SI ──► ¿Otra partida?
+                                       │
+                               NO ──► Resumen Final
+                                       │
+                               SI  ──► <span class="node">¡SOLPED Creada en SAP!</span>
+</pre>
+  </div>
+
+  <!-- ═══ 8. CONSEJOS ═══ -->
+  <div id="tips" class="section-header">
+    <div class="section-icon">⭐</div>
+    <div>
+      <span class="sec-num">Sección 8</span>
+      <h2>Consejos y buenas prácticas</h2>
+    </div>
+  </div>
+  <div class="tips-grid">
+    <div class="tip-card">
+      <span class="tip-icon">🔠</span>
+      <strong>Escribe en MAYÚSCULAS</strong>
+      Usa mayúsculas para los nombres de materiales, descripciones y palabras clave. El bot reconoce mejor los términos en mayúsculas.
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🔢</span>
+      <strong>Solo el número al elegir</strong>
+      Cuando el bot muestre una lista, responde únicamente con el número (1, 2, 3…). No escribas texto adicional.
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">📦</span>
+      <strong>Varias partidas en una SOLPED</strong>
+      Puedes agrupar múltiples artículos o servicios en una misma SOLPED respondiendo SI cuando el bot pregunte "Agregar otra partida".
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🔄</span>
+      <strong>Sesión inactiva</strong>
+      Si el bot no responde después de 2 minutos, envía "hola" nuevamente para reiniciar la sesión sin perder tu historial.
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">🏢</span>
+      <strong>Centro de Costo por defecto</strong>
+      Para el área de Compras de IN00, el Centro de Costo habitual es <strong>400010100 – Compras</strong> (opción 1 en la lista).
+    </div>
+    <div class="tip-card">
+      <span class="tip-icon">📑</span>
+      <strong>Revisa el resumen siempre</strong>
+      Antes de confirmar la creación, lee con cuidado el "Resumen de tu SOLPED". Una vez creada en SAP, los cambios requieren intervención del área de Compras.
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <img class="footer-logo"
+       src="https://indalum.com.mx/wp-content/uploads/logotipo-indalum@2x-1.png"
+       alt="Indalum"
+       onerror="this.style.display='none'" />
+  <p>
+    <strong>Manual de Usuario — Bot SOLPED WhatsApp</strong><br/>
+    Indalum · Sociedad IN00 · SAP S/4HANA · Versión 1.0 · Julio 2026
+  </p>
+</footer>
+
+</body>
+</html>
